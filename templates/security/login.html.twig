@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+    <div class="w-screen min-h-dvh bg-login bg-center bg-no-repeat bg-cover flex items-center justify-center">
+
+        <div class="bg-white flex flex-col gap-8 w-full m-6 p-4 rounded-lg">
+
+            <div class="flex flex-col gap-2">
+                <h1 class="text-3xl">Connexion</h1>
+
+                <span class="text-lg flex gap-2 flex-wrap"><p>Pas encore chez nous ?</p><a  class="underline" href={{ path('app_registration') }}>S'enregistrer</a></span>
+            </div>
+
+            <form method="post" action="{{ path('app_login') }}" class="flex flex-col items-center gap-8">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                {% if app.user %}
+                    <div class="mb-3">
+                        You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                    </div>
+                {% endif %}
+
+                <div class="flex flex-col gap-8 w-full">
+                    <div class="flex flex-col gap-2">
+                        <label for="inputEmail">Adresse email</label>
+                        <input class="outline outline-1 outline-gray-300 rounded-md py-2 px-1" type="email" value="{{ last_username }}" name="_username" id="inputEmail" autocomplete="email" required autofocus>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex">
+                            <label for="inputPassword">Mot de passe</label>
+                            <div class="ml-auto flex gap-2">
+                                <p>O</p>
+                                <p>Afficher</p>
+                            </div>
+                        </div>
+                        <input class="outline outline-1 outline-gray-300 rounded-md py-2 px-1" type="password" name="_password" id="inputPassword" autocomplete="current-password" required>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <div class="ml-auto">
+                        <label>
+                            <input type="checkbox" name="_remember_me"> Se souvenir de moi
+                        </label>
+                    </div>
+                </div>
+
+                <button class="submit-btn w-full rounded-full" type="submit">
+                    Sign in
+                </button>
+            </form>
+
+            <span class="text-lg flex gap-2 justify-center pb-8"><p>Pas encore chez nous ?</p><a  class="underline" href={{ path('app_registration') }}>S'enregistrer</a></span>
+
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un Road Trip{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Nouveau Road Trip</h1>
+
+    {{ form_start(form, {'attr': {'id': 'roadtrip-form'}}) }}
+    
+    <div class="form-group">
+        {{ form_label(form.title) }}
+        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.cover_image) }}
+        {{ form_widget(form.cover_image, {'attr': {'class': 'form-control-file'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.vehicle) }}
+        {{ form_widget(form.vehicle, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    {# Conteneur pour les checkpoints #}
+    <div id="checkpoints-container" 
+         data-prototype="{{ form_widget(form.checkpoints.vars.prototype)|e('html_attr') }}">
+        <h2>Checkpoints</h2>
+        
+        {# Affichage des checkpoints existants #}
+        {% for checkpoint in form.checkpoints %}
+            <div class="checkpoint-item">
+                {{ form_row(checkpoint.name) }}
+                {{ form_row(checkpoint.google_maps_coordinates) }}
+                {{ form_row(checkpoint.arrival_date) }}
+                {{ form_row(checkpoint.departure_date) }}
+                <button type="button" class="btn btn-danger remove-checkpoint">Supprimer</button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="button" id="add-checkpoint" class="btn btn-primary">Ajouter un checkpoint</button>
+
+    {{ form_row(form.submit, {'attr': {'class': 'btn btn-success'}}) }}
+
+    {{ form_end(form) }}
+</div>
+
+{% block javascripts %}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkpointsContainer = document.getElementById('checkpoints-container');
+        const addCheckpointButton = document.getElementById('add-checkpoint');
+
+        // Récupérer le prototype des checkpoints
+        const prototype = checkpointsContainer.dataset.prototype;
+
+        // Fonction pour ajouter un nouveau checkpoint
+        addCheckpointButton.addEventListener('click', function() {
+            // Trouver le nombre actuel de checkpoints
+            const currentCheckpoints = checkpointsContainer.querySelectorAll('.checkpoint-item').length;
+
+            // Remplacer l'index __name__ par un index unique
+            const newCheckpointForm = prototype
+                .replace(/__name__/g, currentCheckpoints)
+                .replace(/__name__label__/g, currentCheckpoints + 1);
+
+            // Créer un conteneur pour le nouveau checkpoint
+            const checkpointDiv = document.createElement('div');
+            checkpointDiv.classList.add('checkpoint-item');
+            checkpointDiv.innerHTML = newCheckpointForm;
+
+            // Ajouter un bouton de suppression
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.classList.add('btn', 'btn-danger', 'remove-checkpoint');
+            removeButton.textContent = 'Supprimer';
+            removeButton.addEventListener('click', function() {
+                checkpointDiv.remove();
+            });
+
+            checkpointDiv.appendChild(removeButton);
+            checkpointsContainer.appendChild(checkpointDiv);
+        });
+
+        // Gestion de la suppression des checkpoints existants
+        checkpointsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-checkpoint')) {
+                e.target.closest('.checkpoint-item').remove();
+            }
+        });
+    });
+    </script>
+{% endblock %}
+{% endblock %}
