@@ -16,12 +16,13 @@ class CheckpointType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
-            ->add('google_maps_coordinates')
+            ->add('name',null, ['required' => false])
+            ->add('google_maps_coordinates', null, ['required' => false])
             ->add('arrival_date', DateTimeType::class, [
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
                 'html5' => true,
+                'required' => false,
                 'constraints' => [
                     new Assert\NotNull(),
                     new Assert\LessThan([
@@ -38,6 +39,7 @@ class CheckpointType extends AbstractType
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
                 'html5' => true,
+                'required' => false,
                 'constraints' => [
                     new Assert\NotNull(),
                     new Assert\LessThan([

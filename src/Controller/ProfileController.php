@@ -105,6 +105,10 @@ class ProfileController extends AbstractController
             $roadtrip->setCoverImage($newFilename);
             }
 
+            foreach ($roadtrip->getCheckpoints() as $checkpoint) {
+                $checkpoint->setRoadtrip($roadtrip);
+            }
+
             $this->entityManager->persist($roadtrip);
             $this->entityManager->flush();
 

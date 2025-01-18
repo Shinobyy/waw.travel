@@ -16,7 +16,7 @@
         {% for roadtrip in roadtrips %}
         <div class="flex flex-col gap-5 rounded-md border border-[#E0E0E0] w-full max-w-96">
             {# <img src="{{ asset('uploads/' ~ roadtrip.coverImage) }}" alt={{ roadtrip.title }} #}
-            <img src="{{ roadtrip.coverImage }}" alt={{ roadtrip.title }}
+            <img src="uploads/{{ roadtrip.coverImage }}" alt={{ roadtrip.title }}
                 class="w-full bg-cover bg-center">
             <div class="flex flex-col px-2 gap-3">
                 <h4 class="text-2xl font-bold">{{ roadtrip.title }}</h4>

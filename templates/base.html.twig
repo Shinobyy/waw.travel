@@ -14,7 +14,9 @@
         {% endblock %}
     </head>
     <body class="antialiased">
+    {% if app.request.get('_route') != 'app_login' %}
         {{ include('partials/_navbar.html.twig') }}
+    {% endif %}
         {% block body %}{% endblock %}
     </body>
 </html>

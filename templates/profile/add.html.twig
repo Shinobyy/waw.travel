@@ -3,99 +3,118 @@
 {% block title %}Créer un Road Trip{% endblock %}
 
 {% block body %}
-<div class="container">
-    <h1>Nouveau Road Trip</h1>
+<div class="container mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-6">Nouveau Road Trip</h1>
 
-    {{ form_start(form, {'attr': {'id': 'roadtrip-form'}}) }}
+    {{ form_start(form, {'attr': {'id': 'roadtrip-form', 'class': 'space-y-6'}}) }}
     
-    <div class="form-group">
-        {{ form_label(form.title) }}
-        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+    <div class="form-group space-y-2">
+        {{ form_label(form.title, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+        {{ form_widget(form.title, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'}}) }}
     </div>
 
-    <div class="form-group">
-        {{ form_label(form.description) }}
-        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+    <div class="form-group space-y-2">
+        {{ form_label(form.description, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+        {{ form_widget(form.description, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'}}) }}
     </div>
 
-    <div class="form-group">
-        {{ form_label(form.cover_image) }}
-        {{ form_widget(form.cover_image, {'attr': {'class': 'form-control-file'}}) }}
+    <div class="form-group space-y-2">
+        {{ form_label(form.cover_image, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+        {{ form_widget(form.cover_image, {'attr': {'class': 'mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'}}) }}
     </div>
 
-    <div class="form-group">
-        {{ form_label(form.vehicle) }}
-        {{ form_widget(form.vehicle, {'attr': {'class': 'form-control'}}) }}
+    <div class="form-group space-y-2">
+        {{ form_label(form.vehicle, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+        {{ form_widget(form.vehicle, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'}}) }}
     </div>
 
     {# Conteneur pour les checkpoints #}
     <div id="checkpoints-container" 
-         data-prototype="{{ form_widget(form.checkpoints.vars.prototype)|e('html_attr') }}">
-        <h2>Checkpoints</h2>
+        class="space-y-4" 
+        data-prototype="{{ form_widget(form.checkpoints.vars.prototype)|e('html') }}">
+        <h2 class="text-xl font-semibold mt-6">Checkpoints</h2>
         
-        {# Affichage des checkpoints existants #}
-        {% for checkpoint in form.checkpoints %}
-            <div class="checkpoint-item">
-                {{ form_row(checkpoint.name) }}
-                {{ form_row(checkpoint.google_maps_coordinates) }}
-                {{ form_row(checkpoint.arrival_date) }}
-                {{ form_row(checkpoint.departure_date) }}
-                <button type="button" class="btn btn-danger remove-checkpoint">Supprimer</button>
-            </div>
-        {% endfor %}
+        {# Liste des checkpoints existants #}
+        <div class="checkpoints-list">
+            {% for checkpoint in form.checkpoints %}
+                <div class="checkpoint-item bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4">
+                    {{ form_row(checkpoint.name, {
+                        'label': 'Nom du lieu',
+                        'label_attr': {'class': 'block text-sm font-medium text-gray-700'},
+                        'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'}
+                    }) }}
+                    {{ form_row(checkpoint.google_maps_coordinates, {
+                        'label': 'Coordonnées Google Maps',
+                        'label_attr': {'class': 'block text-sm font-medium text-gray-700'},
+                        'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'}
+                    }) }}
+                    {{ form_row(checkpoint.arrival_date, {
+                        'label': 'Date d\'arrivée',
+                        'label_attr': {'class': 'block text-sm font-medium text-gray-700'},
+                        'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'}
+                    }) }}
+                    {{ form_row(checkpoint.departure_date, {
+                        'label': 'Date de départ',
+                        'label_attr': {'class': 'block text-sm font-medium text-gray-700'},
+                        'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'}
+                    }) }}
+                    <button type="button" class="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 remove-checkpoint">Supprimer</button>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 
-    <button type="button" id="add-checkpoint" class="btn btn-primary">Ajouter un checkpoint</button>
+    <button type="button" id="add-checkpoint" class="mt-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Ajouter un checkpoint</button>
 
-    {{ form_row(form.submit, {'attr': {'class': 'btn btn-success'}}) }}
+    {{ form_row(form.submit, {'attr': {'class': 'mt-6 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600'}}) }}
 
     {{ form_end(form) }}
 </div>
 
-{% block javascripts %}
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkpointsContainer = document.getElementById('checkpoints-container');
-        const addCheckpointButton = document.getElementById('add-checkpoint');
-
-        // Récupérer le prototype des checkpoints
-        const prototype = checkpointsContainer.dataset.prototype;
-
-        // Fonction pour ajouter un nouveau checkpoint
-        addCheckpointButton.addEventListener('click', function() {
-            // Trouver le nombre actuel de checkpoints
-            const currentCheckpoints = checkpointsContainer.querySelectorAll('.checkpoint-item').length;
-
-            // Remplacer l'index __name__ par un index unique
-            const newCheckpointForm = prototype
-                .replace(/__name__/g, currentCheckpoints)
-                .replace(/__name__label__/g, currentCheckpoints + 1);
-
-            // Créer un conteneur pour le nouveau checkpoint
-            const checkpointDiv = document.createElement('div');
-            checkpointDiv.classList.add('checkpoint-item');
-            checkpointDiv.innerHTML = newCheckpointForm;
-
-            // Ajouter un bouton de suppression
-            const removeButton = document.createElement('button');
-            removeButton.type = 'button';
-            removeButton.classList.add('btn', 'btn-danger', 'remove-checkpoint');
-            removeButton.textContent = 'Supprimer';
-            removeButton.addEventListener('click', function() {
-                checkpointDiv.remove();
-            });
-
-            checkpointDiv.appendChild(removeButton);
-            checkpointsContainer.appendChild(checkpointDiv);
-        });
-
-        // Gestion de la suppression des checkpoints existants
-        checkpointsContainer.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-checkpoint')) {
-                e.target.closest('.checkpoint-item').remove();
-            }
-        });
-    });
-    </script>
 {% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+    <script>
+const initializeCheckpoints = () => {
+    const checkpointsContainer = document.querySelector('.checkpoints-list');
+    const addCheckpointButton = document.getElementById('add-checkpoint');
+    let index = checkpointsContainer.children.length;
+
+    // Fonction pour ajouter un nouveau checkpoint
+    addCheckpointButton.addEventListener('click', function() {
+        // Récupérer le prototype
+        const prototype = document.getElementById('checkpoints-container').dataset.prototype;
+        
+        // Créer un seul formulaire
+        const newForm = prototype.replace(/__name__/g, index);
+        
+        // Créer le conteneur du checkpoint
+        const checkpointDiv = document.createElement('div');
+        checkpointDiv.classList.add('checkpoint-item', 'bg-gray-50', 'border', 'border-gray-200', 'rounded-lg', 'p-4', 'space-y-4');
+        checkpointDiv.innerHTML = newForm;
+
+        // Ajouter le bouton de suppression
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.classList.add('mt-2', 'bg-red-500', 'text-white', 'px-4', 'py-2', 'rounded', 'hover:bg-red-600', 'remove-checkpoint');
+        removeButton.textContent = 'Supprimer';
+        
+        checkpointDiv.appendChild(removeButton);
+        checkpointsContainer.appendChild(checkpointDiv);
+        
+        index++;
+    });
+
+    // Gestion de la suppression
+    checkpointsContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-checkpoint')) {
+            e.target.closest('.checkpoint-item').remove();
+        }
+    });
+};
+
+// N'initialiser qu'une seule fois quand le DOM est prêt
+document.addEventListener('DOMContentLoaded', initializeCheckpoints, { once: true });
+</script>
 {% endblock %}

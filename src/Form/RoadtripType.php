@@ -37,6 +37,8 @@ class RoadtripType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
+                'prototype' => true,
+                'required' => false, // Rend les checkpoints optionnels
                 'label' => 'Checkpoints',
                 'entry_options' => [
                     'label' => false,
