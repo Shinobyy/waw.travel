@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Image;
 use App\Entity\Roadtrip;
 use App\Entity\Vehicles;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -10,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -19,7 +19,12 @@ class RoadtripType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('description')
+            ->add('description', TextareaType::class, [
+                'label' => 'Description',
+                'attr' => [
+                    'class' => 'wysiwyg',
+                ]
+            ])
             ->add('cover_image', FileType::class, [
                 'label' => 'Images de couverture',
                 'multiple' => false,
@@ -38,7 +43,7 @@ class RoadtripType extends AbstractType
                 'allow_delete' => true,
                 'by_reference' => false,
                 'prototype' => true,
-                'required' => false, // Rend les checkpoints optionnels
+                'required' => false,
                 'label' => 'Checkpoints',
                 'entry_options' => [
                     'label' => false,
