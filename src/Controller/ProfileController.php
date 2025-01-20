@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Checkpoint;
-use App\Entity\Image;
 use App\Entity\Roadtrip;
 use App\Form\RoadtripType;
 use App\Repository\RoadtripRepository;
