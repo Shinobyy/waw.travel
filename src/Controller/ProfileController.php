@@ -17,15 +17,19 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Service\FileUploadService;
 
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 class ProfileController extends AbstractController
 {
     private $fileUploadService;
     private $entityManager;
+    private $httpClient;
 
-    public function __construct(EntityManagerInterface $entityManager, FileUploadService $fileUploadService)
+    public function __construct(EntityManagerInterface $entityManager, FileUploadService $fileUploadService, HttpClientInterface $httpClient)
     {
         $this->fileUploadService = $fileUploadService;
         $this->entityManager = $entityManager;
+        $this->httpClient = $httpClient;
     }
 
 
@@ -163,6 +167,63 @@ class ProfileController extends AbstractController
         }
 
         $user = $roadtrip->getUserId();
+     
+//  $checkpoints = $roadtrip->getCheckpoints();
+//  if (count($checkpoints) >= 2) {
+//      $firstCheckpoint = $checkpoints[0];
+//      $lastCheckpoint = $checkpoints[count($checkpoints) - 1];
+
+//      $firstcoords = $firstCheckpoint->getGoogleMapsCoordinates();
+//      [$firstlat, $firstlng] = explode(',', $firstcoords);
+
+//      $lastcoords = $lastCheckpoint->getGoogleMapsCoordinates();
+//      [$lastlat, $lastlng] = explode(',', $lastcoords);
+    
+//     //  dd($firstlat, $firstlng, $lastlat, $lastlng);
+
+//      $response = $this->httpClient->request('POST', 'https://routes.googleapis.com/directions/v2:computeRoutes', [
+//          'headers' => [
+//              'Content-Type' => 'application/json',
+//              'X-Goog-Api-Key' => 'AIzaSyA1SC4y43QhRkEtzuHnQ06IsTlQ1hAN1mk',
+//              'X-Goog-FieldMask' => 'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline',
+//          ],
+//          'json' => [
+//              'origin' => [
+//                  'location' => [
+//                      'latLng' => [
+//                          'latitude' => $firstlat,
+//                          'longitude' => $firstlng,
+//                      ],
+//                  ],
+//              ],
+//              'destination' => [
+//                  'location' => [
+//                      'latLng' => [
+//                          'latitude' => $lastlat,
+//                          'longitude' => $lastlng,
+//                      ],
+//                  ],
+//              ],
+//              'travelMode' => 'DRIVE',
+//              'routingPreference' => 'TRAFFIC_AWARE',
+//              'computeAlternativeRoutes' => false,
+//              'routeModifiers' => [
+//                  'avoidTolls' => false,
+//                  'avoidHighways' => false,
+//                  'avoidFerries' => false,
+//              ],
+//              'languageCode' => 'en-US',
+//              'units' => 'METRIC',
+//          ],
+//      ]);
+
+//      $data = $response->toArray();
+//      $distance = $data['routes'][0]['distanceMeters'] ?? null;
+//  } else {
+//      $distance = null;
+//  }
+
+//         dd($distance);
 
         return $this->render('profile/show.html.twig', [
             'roadtrip' => $roadtrip,

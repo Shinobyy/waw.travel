@@ -17,5 +17,8 @@
         {{ include('partials/_navbar.html.twig') }}
     {% endif %}
         {% block body %}{% endblock %}
+    {% if app.request.get('_route') != 'app_login' and app.request.get('_route') != 'app_registration' %}
+        {{ include('partials/_footer.html.twig') }}
+    {% endif %}
     </body>
 </html>
