@@ -4,7 +4,7 @@
 
 {% block body %}
 
-<div style="background-image: url('uploads/{{roadtrip.coverImage}}')" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat">
+<div style="background-image: url('{{roadtrip.coverImage}}')" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat">
 {# <div style="background-image: url({{asset('uploads/' ~ roadtrip.coverImage)}})" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat"> #}
     <h1 class="text-white text-2xl md:text-4xl font-bold mt-5">{{ roadtrip.title }}</h1>
     

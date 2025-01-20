@@ -27,7 +27,7 @@ class RoadtripFixtures extends Fixture
         $user = new User();
         $user->setEmail('corentin.casset@gmail.com');
         $user->setUsername("Corentin");
-        $user->setPassword('123456789');
+        $user->setPassword('$2y$10$IQ2AnBVsUSKSsjW.gRDxP.dbD8Gbb0/NNy5M8/wXDyMgt9KUCYEiO');
         $user->setRoles(["ROLE_USER"]);
 
 
@@ -39,13 +39,13 @@ class RoadtripFixtures extends Fixture
             $roadtrip->setTitle($faker->sentence(4));
             $roadtrip->setDescription($faker->paragraph());
             $roadtrip->setVehicle($faker->randomElement($vehicles));
-            $roadtrip->setCoverImage($faker->imageUrl());
+            $roadtrip->setCoverImage('https://picsum.photos/600/400');
 
             $checkpointCount = $faker->numberBetween(2, 5);
             for ($j = 0; $j < $checkpointCount; $j++) {
                 $checkpoint = new Checkpoint();
                 $checkpoint->setName($faker->city());
-                $checkpoint->setGoogleMapsCoordinates($faker->sentence());
+                $checkpoint->setGoogleMapsCoordinates($faker->latitude() . ',' . $faker->longitude());
                 $checkpoint->setRoadtrip($roadtrip);
                 $checkpoint->setDepartureDate(new \DateTimeImmutable($faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s')));
                 $checkpoint->setArrivalDate(new \DateTimeImmutable($faker->dateTimeBetween('now', '+1 year')->format('Y-m-d H:i:s')));

@@ -8,15 +8,38 @@
         <span class="text-primary-red">{{ username | capitalize }}</span>
     </h1>
 
-    <h2 class="text-xl md:text-3xl">Vos roadtrips</h2>
-    <p>Retrouvez vos derniers roadtrips, revivez vos souvenirs, modifiez-les, ou encore supprimez-les :(</p>
+    <h2 class="text-xl md:text-3xl mt-6 mb-5">Vos roadtrips</h2>
+    <p class="mb-10">Retrouvez vos derniers roadtrips, revivez vos souvenirs, modifiez-les, ou encore supprimez-les :(</p>
+
+    {% if lastRoadtrip %}
+    <div class="">
+        <h2 class="text-2xl font-bold mb-4">Votre dernier roadtrip</h2>
+        <div class="relative rounded-md border border-[#E0E0E0] overflow-hidden">
+            <!-- Image de couverture -->
+            <img src="{{ lastRoadtrip.coverImage }}" alt="{{ lastRoadtrip.title }}"
+                class="w-full h-48 sm:h-64 object-cover">
+            <!-- Détails -->
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 text-white">
+                <p class="text-lg text-primary-white font-semibold">{{ lastRoadtrip.title }}</p>
+            </div>
+        </div>
+        <!-- Bouton -->
+        <div class="mt-4 flex justify-end mb-10">
+            <a href="{{ path('app_show_roadtrip', { id: lastRoadtrip.id }) }}"
+                class="inline-flex items-center px-4 py-2 bg-primary-red text-white text-sm font-medium rounded-lg hover:bg-red-600 transition">
+                Voir les détails
+            </a>
+        </div>
+    </div>
+{% endif %}
+
 
     {% if roadtrips %}
     <div class="flex flex-wrap justify-center gap-10 mt-5 w-full md:justify-between">
         {% for roadtrip in roadtrips %}
         <div class="flex flex-col gap-5 rounded-md border border-[#E0E0E0] w-full max-w-96">
             {# <img src="{{ asset('uploads/' ~ roadtrip.coverImage) }}" alt={{ roadtrip.title }} #}
-            <img src="uploads/{{ roadtrip.coverImage }}" alt={{ roadtrip.title }}
+            <img src="{{ roadtrip.coverImage }}" alt={{ roadtrip.title }}
                 class="w-full bg-cover bg-center">
             <div class="flex flex-col px-2 gap-3">
                 <h4 class="text-2xl font-bold">{{ roadtrip.title }}</h4>
@@ -26,7 +49,7 @@
                 {% endfor %} #}
             </div>
 
-            <div class="flex justify-around flex-wrap items-center gap-5 p-2">
+            <div class="flex justify-around flex-wrap items-center gap-5 p-2 mt-auto">
                 <a class="min-w-36 px-4 py-2 justify-center rounded-full flex gap-2 bg-primary-red text-white outline-2 outline-primary-red hover:text-primary-red hover:outline-primary-red hover:outline hover:bg-transparent transition-all hover:cursor-pointer" href={{ path('app_show_roadtrip', { id: roadtrip.id }) }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye">
                         <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />

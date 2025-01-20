@@ -65,12 +65,15 @@ class ProfileController extends AbstractController
         }
     }
 
+    $lastRoadtrip = $roadtripRepository->findLastRoadtrip($user->getId());
+
     return $this->render('profile/index.html.twig', [
         'id' => $this->getUser()->getId(),
         'username' => $this->getUser()->getUsername(),
         'roadtrips' => $roadtrips,
         'begin' => $begin,
         'end' => $end,
+        'lastRoadtrip' => $lastRoadtrip
     ]);
     }
 
@@ -159,9 +162,11 @@ class ProfileController extends AbstractController
             $this->redirectToRoute('app_main');
         }
 
+        $user = $roadtrip->getUserId();
+
         return $this->render('profile/show.html.twig', [
             'roadtrip' => $roadtrip,
-            'username' => $this->getUser()->getUsername(),
+            'username' => $user->getUsername(),
             'vehicle' => $vehicle
         ]);
     }

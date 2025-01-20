@@ -40,4 +40,39 @@ class RoadtripRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findLastRoadtrip($user) {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.user_id = :user')
+            ->setParameter('user', $user)
+            ->orderBy('r.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
+
+
+/**
+ * RoadtripRepository.php on line 45:
+    App\Entity\Roadtrip {#1332 ▼
+    -id: 60
+    -title: "Amet voluptas iure iste qui."
+    -cover_image: "https://picsum.photos/600/400"
+    -user_id: 
+    App\Entity
+    \
+    User {#1020 ▶}
+    -vehicle: 
+    Proxies\__CG__\App\Entity
+    \
+    Vehicles {#1268 ▶}
+    -created_at: DateTimeImmutable @1737366343 {#1330 ▶}
+    -updated_at: DateTimeImmutable @1737366343 {#1331 ▶}
+    +checkpoints: 
+    Doctrine\ORM
+    \
+    PersistentCollection {#1333 ▶}
+    -description: "Ut voluptatibus optio consequuntur saepe expedita quidem soluta autem. Maiores et facere assumenda dolores voluptatibus dolor. Cumque a illum ducimus."
+    }
+ */

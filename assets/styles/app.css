@@ -37,3 +37,7 @@ li{
 .landing_hero {
     background-image: url('/public/images/landing.webp');
 }
+
+.registration-background {
+    background-image: url('/public/images/register.webp');
+}
