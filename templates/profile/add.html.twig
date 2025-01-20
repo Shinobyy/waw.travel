@@ -46,7 +46,6 @@
     
     <div class="form-group space-y-2">
         {{ form_label(checkpoint.google_maps_coordinates, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-        <div class="map-container" style="height: 500px; width: 100%; margin-bottom: 10px;"></div>
         {{ form_widget(checkpoint.google_maps_coordinates, {
             'attr': {
                 'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm coordinates-input',
@@ -57,6 +56,7 @@
 
     {{ form_row(checkpoint.arrival_date) }}
     {{ form_row(checkpoint.departure_date) }}
+    <button type="button" class="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 remove-checkpoint">Supprimer</button>
 </div>
             {% endfor %}
         </div>
@@ -74,8 +74,6 @@
 {% block javascripts %}
     <script>
 (function() {
-    let maps = new Map();
-
     function initializeCheckpoints() {
         const checkpointsContainer = document.querySelector('.checkpoints-list');
         const addCheckpointButton = document.getElementById('add-checkpoint');
@@ -85,9 +83,15 @@
             return;
         }
 
-        document.querySelectorAll('.map-container').forEach((container, index) => {
-            initializeMap(container, index);
-        })
+        // Handle remove button clicks using event delegation
+        checkpointsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-checkpoint')) {
+                const checkpointDiv = e.target.closest('.checkpoint-item');
+                if (checkpointDiv) {
+                    checkpointDiv.remove();
+                }
+            }
+        });
 
         let index = checkpointsContainer.children.length;
 
@@ -110,60 +114,20 @@
             checkpointDiv.classList.add('checkpoint-item', 'bg-gray-50', 'border', 'border-gray-200', 'rounded-lg', 'p-4', 'space-y-4');
             checkpointDiv.innerHTML = newForm;
 
-            checkpointsContainer.appendChild(checkpointDiv);
+            // Add remove button
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.classList.add('mt-2', 'bg-red-500', 'text-white', 'px-4', 'py-2', 'rounded', 'hover:bg-red-600', 'remove-checkpoint');
+            removeButton.textContent = 'Supprimer';
             
-            // Wait for DOM update
-            await new Promise(resolve => setTimeout(resolve, 0));
-            
-            // Initialize map for new checkpoint
-            const mapContainer = checkpointDiv.querySelector('.map-container');
-            if(mapContainer) {
-                await initializeMap(mapContainer, index);
-            }
+            checkpointDiv.appendChild(removeButton);
+            checkpointsContainer.appendChild(checkpointDiv); // Only append once
             
             index++;
         });
     }
 
-    async function initializeMap(container, index) {
-        const { Map, Marker } = await google.maps.importLibrary("maps");
-        const map = new Map(container, {
-            center: { lat: 46.227638, lng: 2.213749 },
-            zoom: 6
-        });
-
-        let marker = null;
-        const coordInput = container.parentElement.querySelector('.coordinates-input');
-
-        map.addListener('click', (e) => {
-            const lat = e.latLng.lat();
-            const lng = e.latLng.lng();
-
-            if (marker) marker.setMap(null);
-            
-            marker = new Marker({
-                position: e.latLng,
-                map: map
-            });
-
-            if (coordInput) {
-                coordInput.value = `${lat},${lng}`;
-            }
-        });
-
-        maps.set(index, map);
-        return map;
-    }
-
     document.addEventListener('DOMContentLoaded', initializeCheckpoints);
 })();
-</script>
-
-{{ parent() }}
-<script>
-  (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
-    key: "AIzaSyA1SC4y43QhRkEtzuHnQ06IsTlQ1hAN1mk",
-    v: "weekly",
-  });
 </script>
 {% endblock %}
