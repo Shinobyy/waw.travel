@@ -2,9 +2,20 @@
 
 {% block title %}{{roadtrip.title}} | {{username}} {% endblock %}
 
+{% block head %}
+    {{ parent() }}
+    <meta property="og:locale" content="{{ ogLocale }}">
+    <meta property="og:type" content="{{ ogType }}">
+    <meta property="og:title" content="{{ ogTitle }}">
+    <meta property="og:description" content="{{ ogDescription }}">
+    <meta property="og:url" content="{{ ogUrl }}">
+    <meta property="og:site_name" content="{{ ogSiteName }}">
+    <meta property="og:image" content="{{ ogImageSecureUrl }}">
+{% endblock %}
+
 {% block body %}
 
-<div style="background-image: url('{{roadtrip.coverImage}}')" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat">
+<div style="background-image: url('uploads/{{roadtrip.coverImage}}')" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat">
     <h1 class="text-white text-2xl md:text-4xl font-bold mt-5">{{ roadtrip.title }}</h1>
     
     <div class="flex flex-row gap-2">

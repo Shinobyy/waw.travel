@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+    {% block head %}
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
@@ -11,6 +12,7 @@
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
+    {% endblock %}
     </head>
     <body class="antialiased">
     {% if app.request.get('_route') != 'app_login' and app.request.get('_route') != 'app_registration' %}

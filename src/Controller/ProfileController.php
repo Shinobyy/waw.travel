@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Service\FileUploadService;
 
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ProfileController extends AbstractController
@@ -22,12 +23,23 @@ class ProfileController extends AbstractController
     private $fileUploadService;
     private $entityManager;
     private $httpClient;
+    private $slugger;
+    private $ogLocale;
+    private $ogType;
+    private $ogTitle;
+    private $ogDescription;
+    private $ogUrl;
+    private $ogSiteName;
+    private $ogImageSecureUrl;
+    private $ogImageWidth;
+    private $ogImageHeight;
 
-    public function __construct(EntityManagerInterface $entityManager, FileUploadService $fileUploadService, HttpClientInterface $httpClient)
+    public function __construct(EntityManagerInterface $entityManager, FileUploadService $fileUploadService, HttpClientInterface $httpClient, SluggerInterface $slugger)
     {
         $this->fileUploadService = $fileUploadService;
         $this->entityManager = $entityManager;
         $this->httpClient = $httpClient;
+        $this->slugger = $slugger;
     }
 
 
@@ -223,10 +235,26 @@ class ProfileController extends AbstractController
 
 //         dd($distance);
 
-        return $this->render('profile/show.html.twig', [
-            'roadtrip' => $roadtrip,
-            'username' => $user->getUsername(),
-            'vehicle' => $vehicle
-        ]);
+
+    $this->ogLocale = 'fr_FR';
+    $this->ogType = 'website';
+    $this->ogTitle = $roadtrip->getTitle();
+    $this->ogDescription = substr($roadtrip->getDescription(), 0, 245) . '...';
+    $this->ogUrl = $this->generateUrl('app_show_roadtrip', ['id' => $roadtrip->getId()], true);
+    $this->ogSiteName = 'Waw.travel';
+    $this->ogImageSecureUrl = $roadtrip->getCoverImage();
+
+    return $this->render('profile/show.html.twig', [
+        'roadtrip' => $roadtrip,
+        'username' => $user->getUsername(),
+        'vehicle' => $vehicle,
+        'ogLocale' => $this->ogLocale,
+        'ogType' => $this->ogType,
+        'ogTitle' => $this->ogTitle,
+        'ogDescription' => $this->ogDescription,
+        'ogUrl' => $this->ogUrl,
+        'ogSiteName' => $this->ogSiteName,
+        'ogImageSecureUrl' => $this->ogImageSecureUrl,
+    ]);
     }
 }
