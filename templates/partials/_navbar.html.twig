@@ -61,16 +61,20 @@
 </nav>
 
 <script>
-    const profileIcon = document.getElementById('profile_icon');
-    const dropdownMenu = document.getElementById('dropdown_menu');
+    (function() {
+        const profileIcon = document.getElementById('profile_icon');
+        const dropdownMenu = document.getElementById('dropdown_menu');
 
-    profileIcon.addEventListener('click', () => {
-        dropdownMenu.classList.toggle('hidden');
-    });
+        if (profileIcon && dropdownMenu) {
+            profileIcon.addEventListener('click', () => {
+                dropdownMenu.classList.toggle('hidden');
+            });
 
-    document.addEventListener('click', (event) => {
-        if (!profileIcon.contains(event.target)) {
-            dropdownMenu.classList.add('hidden');
+            document.addEventListener('click', (event) => {
+                if (!profileIcon.contains(event.target)) {
+                    dropdownMenu.classList.add('hidden');
+                }
+            });
         }
-    });
+    })();
 </script>

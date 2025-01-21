@@ -2,6 +2,14 @@
 
 {% block title %}Waw.travel | Partagez vos roadtrips !{% endblock %}
 
+{% block head %}
+    {{ parent() }}
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1SC4y43QhRkEtzuHnQ06IsTlQ1hAN1mk&callback=initMap&v=weekly&libraries=marker"
+    defer
+    ></script>
+{% endblock %}
+
 {% block body %}
 
     <div class="bg-landing md:rounded-md md:mx-16 lg:mx-72 gap-10 h-[60dvh] flex flex-col items-center justify-center">
@@ -48,25 +56,28 @@
 
 
     </section>
+    <section class="flex flex-col gap-5 mt-10">
+        <h2 class="md:text-3xl text-xl">Là où vont nos voyageurs</h2>
+        <div class="h-[50vh] w-full bg-blue-200 rounded-md" id="map">
+        </div>
+    </section>
 </main>
 
 
 
-    <section class="flex flex-col gap-5 mt-10">
-        <h2 class="mx-5 md:mx-16 md:text-3xl lg:mx-72 text-xl">Là où vont nos voyageurs</h2>
 
-        <div class="h-[33vh] w-full bg-blue-200">
-            {% for checkpoint in checkpoints %}
-                <p>{{ checkpoint.googleMapsCoordinates }}</p>
-            {% endfor %}
-        </div>
-    </section>
-
-    <section class="flex flex-col gap-5 mt-10 items-center">
-    
-        <h2 class="text-xl md:text-2xl font-bold">Prêt à partager votre voyage ?</h2>
+    <section class="flex flex-col gap-5 mt-10 md:my-32 items-center">
+        <h2 class="text-xl md:text-4xl font-bold">Prêt à partager votre voyage ?</h2>
                 <a class="px-7 py-2 rounded-full bg-primary-red text-white outline-2 outline-primary-red hover:outline-primary-red hover:outline hover:bg-transparent transition-all hover:cursor-pointer hover:text-primary-red" href={{path('app_registration')}}>
         Inscrivez-vous - C'est gratuit !</a>
     </section>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+      var checkpoints = {{ checkpoints|map(c => c.googleMapsCoordinates)|json_encode|raw }};
+    </script>
+    <script type="module" src="{{ asset('js/map_uglified.js') }}" defer></script>
 {% endblock %}

@@ -40,11 +40,11 @@ class RoadtripType extends AbstractType
             ->add('checkpoints', CollectionType::class, [
                 'entry_type' => CheckpointType::class,
                 'allow_add' => true,
+                'label' => false,
                 'allow_delete' => true,
                 'by_reference' => false,
                 'prototype' => true,
                 'required' => true,
-                'label' => 'Checkpoints',
                 'entry_options' => [
                     'label' => false,
                 ],
