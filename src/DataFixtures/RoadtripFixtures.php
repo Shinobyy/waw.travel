@@ -16,6 +16,7 @@ class RoadtripFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
 
+        // Création des types de véhicules
         $vehicleTypes = ['Moto', 'Voiture', 'Vélo'];
         $vehicles = [];
         foreach ($vehicleTypes as $type) {
@@ -24,54 +25,99 @@ class RoadtripFixtures extends Fixture
             $manager->persist($vehicle);
             $vehicles[] = $vehicle;
         }
-        $user = new User();
-        $user->setEmail('corentin.casset@gmail.com');
-        $user->setUsername("Corentin");
-        $user->setPassword('$2y$10$IQ2AnBVsUSKSsjW.gRDxP.dbD8Gbb0/NNy5M8/wXDyMgt9KUCYEiO');
-        $user->setRoles(["ROLE_USER"]);
+        
+        // Création des utilisateurs fixes
+        $fixedUsers = [
+            [
+                'email' => 'corentin.casset@gmail.com',
+                'username' => 'Corentin',
+                'password' => '$2y$10$IQ2AnBVsUSKSsjW.gRDxP.dbD8Gbb0/NNy5M8/wXDyMgt9KUCYEiO',
+                'roles' => ['ROLE_USER']
+            ],
+            [
+                'email' => 'admin@roadtrip.com',
+                'username' => 'Admin',
+                'password' => '$2y$10$IQ2AnBVsUSKSsjW.gRDxP.dbD8Gbb0/NNy5M8/wXDyMgt9KUCYEiO',
+                'roles' => ['ROLE_ADMIN']
+            ]
+        ];
 
+        $users = [];
+        
+        // Création des utilisateurs fixes
+        foreach ($fixedUsers as $userData) {
+            $user = new User();
+            $user->setEmail($userData['email']);
+            $user->setUsername($userData['username']);
+            $user->setPassword($userData['password']);
+            $user->setRoles($userData['roles']);
+            $manager->persist($user);
+            $users[] = $user;
+        }
 
-        for ($i = 0; $i < 15; $i++) {
-            $roadtrip = new Roadtrip();
+        // Création des utilisateurs aléatoires
+        for ($i = 0; $i < 5; $i++) {
+            $user = new User();
+            $user->setEmail($faker->email());
+            $user->setUsername($faker->userName());
+            $user->setPassword('$2y$10$IQ2AnBVsUSKSsjW.gRDxP.dbD8Gbb0/NNy5M8/wXDyMgt9KUCYEiO');
+            $user->setRoles(['ROLE_USER']);
+            $manager->persist($user);
+            $users[] = $user;
+        }
 
-            $uploadDir = __DIR__ . '/../../public/uploads';
+        // Vérification et configuration du dossier uploads
+        $uploadDir = __DIR__ . '/../../public/uploads';
+        if (!is_dir($uploadDir)) {
+            throw new \Exception("Le répertoire 'uploads' est introuvable");
+        }
+        
+        $files = array_diff(scandir($uploadDir), ['.', '..']);
+        if (empty($files)) {
+            throw new \Exception("Aucun fichier trouvé dans le répertoire 'uploads'");
+        }
 
-            if (!is_dir($uploadDir)) {
-                throw new \Exception("Le répertoire 'uploads' est introuvable");
-            }
+        // Création des roadtrips pour chaque utilisateur
+        foreach ($users as $user) {
+            $roadtripCount = $faker->numberBetween(1, 3);
             
-            $files = scandir($uploadDir);
+            for ($i = 0; $i < $roadtripCount; $i++) {
+                $roadtrip = new Roadtrip();
+                $randomFile = 'uploads/' . $files[array_rand($files)];
 
-            $files = array_diff($files, ['.', '..']);
-
-            if (empty($files)) {
-                throw new \Exception("Aucun fichier trouvé dans le répertoire 'uploads'");
-            }
-
-            $randomFile = 'uploads/' . $files[array_rand($files)];
-
-            $roadtrip->setUserId($user);
-            $roadtrip->setTitle($faker->sentence(4));
-            $roadtrip->setDescription($faker->paragraph());
-            $roadtrip->setVehicle($faker->randomElement($vehicles));
-            $roadtrip->setCoverImage($randomFile);
-            $roadtrip->setImage1($randomFile);
-            $roadtrip->setImage2($randomFile);
-            $roadtrip->setImage3($randomFile);
-            
-            $checkpointCount = $faker->numberBetween(2, 5);
-            for ($j = 0; $j < $checkpointCount; $j++) {
-                $checkpoint = new Checkpoint();
-                $checkpoint->setName($faker->city());
-                $checkpoint->setGoogleMapsCoordinates($faker->latitude() . ',' . $faker->longitude());
-                $checkpoint->setRoadtrip($roadtrip);
-                $checkpoint->setDepartureDate(new \DateTimeImmutable($faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s')));
-                $checkpoint->setArrivalDate(new \DateTimeImmutable($faker->dateTimeBetween('now', '+1 year')->format('Y-m-d H:i:s')));
+                $roadtrip->setUserId($user);
+                $roadtrip->setTitle($faker->sentence(4));
+                $roadtrip->setDescription($faker->paragraph());
+                $roadtrip->setVehicle($faker->randomElement($vehicles));
+                $roadtrip->setCoverImage($randomFile);
+                $roadtrip->setImage1($randomFile);
+                $roadtrip->setImage2($randomFile);
+                $roadtrip->setImage3($randomFile);
                 
-                $manager->persist($checkpoint);
-            }
+                // Création des checkpoints pour chaque roadtrip
+                $checkpointCount = $faker->numberBetween(2, 5);
+                $startDate = $faker->dateTimeBetween('-1 year', 'now');
+                
+                for ($j = 0; $j < $checkpointCount; $j++) {
+                    $checkpoint = new Checkpoint();
+                    $checkpoint->setName($faker->city());
+                    $checkpoint->setGoogleMapsCoordinates(
+                        $faker->latitude(43.0, 49.0) . ',' . $faker->longitude(-1.0, 8.0)
+                    );
+                    $checkpoint->setRoadtrip($roadtrip);
+                    
+                    // Dates cohérentes entre les checkpoints
+                    $departureDate = (clone $startDate)->modify("+{$j} days");
+                    $arrivalDate = (clone $departureDate)->modify('+1 day');
+                    
+                    $checkpoint->setDepartureDate(new \DateTimeImmutable($departureDate->format('Y-m-d H:i:s')));
+                    $checkpoint->setArrivalDate(new \DateTimeImmutable($arrivalDate->format('Y-m-d H:i:s')));
+                    
+                    $manager->persist($checkpoint);
+                }
 
-            $manager->persist($roadtrip);
+                $manager->persist($roadtrip);
+            }
         }
 
         $manager->flush();
