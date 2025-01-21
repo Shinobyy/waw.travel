@@ -33,7 +33,7 @@
 
 {% block body %}
 
-<div style="background-image: url('uploads/{{roadtrip.coverImage}}')" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat">
+<div style="background-image: url('{{roadtrip.coverImage}}')" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat">
 
     <a href={{ path('app_delete_roadtrip', { id: roadtrip.id })}} class="m-5 absolute top-0 right-0 min-w-36 justify-center px-4 py-2 rounded-full flex gap-2 text-primary-red border-solid border-2 border-primary-red hover:cursor-pointer" id="delete">Supprimer</a>
 
@@ -106,7 +106,7 @@
         {% set width = 100 / imageLength %}
         {% for image in images|filter(i => i is not null) %}
             <div style="width: {{ width }}%;" class="bento-item rounded-md">
-                <img src="{{ asset('uploads/' ~ image) }}" alt="Photo du voyage" class="h-full object-cover object-center w-full rounded-md">
+                <img src="{{ asset(image) }}" alt="Photo du voyage" class="h-full object-cover object-center w-full rounded-md">
             </div>
         {% else %}
             <p class="text-secondary-black">Aucune photo disponible.</p>

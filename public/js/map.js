@@ -4,6 +4,7 @@
 
             const map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 2,
+                minZoom: 2,
                 center: position,
                 mapId: "fa7b1aadc11c7224",
                 mapTypeId: 'satellite',
