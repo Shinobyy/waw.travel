@@ -3,72 +3,143 @@
 {% block title %}Créer un Road Trip{% endblock %}
 
 {% block body %}
-<div class="container mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-6">Nouveau Road Trip</h1>
+<div class="min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/images/landing.webp')">
+    <div class="container mx-auto px-4 py-8 min-h-screen flex items-center justify-center">
+        {# Card principale #}
+        <div class="bg-white rounded-3xl shadow-xl p-8 w-full max-w-2xl relative">
+            {# Bouton fermer #}
+            <a href={{path('app_profile')}} class="absolute top-4 right-4 text-gray-400 hover:text-gray-500">
+                <span class="sr-only">Fermer</span>
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </a>
 
-    {{ form_start(form, {'attr': {'id': 'roadtrip-form', 'class': 'space-y-6'}}) }}
-    
-    <div class="form-group space-y-2">
-        {{ form_label(form.title, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-        {{ form_widget(form.title, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'}}) }}
-    </div>
+{% if app.request.attributes.get('_route') == 'app_add_roadtrip' %}
+    <h1 class="text-2xl font-medium text-[#E87B85] mb-8">Créer un roadtrip</h1>
+{% else %}
+    <h1 class="text-2xl font-medium text-[#E87B85] mb-8">Modifier un roadtrip</h1>
+{% endif %}
 
-    <div class="form-group space-y-2">
-        {{ form_label(form.description, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-        {{ form_widget(form.description, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'}}) }}
-    </div>
+            {{ form_start(form, {'attr': {'id': 'roadtrip-form', 'class': 'space-y-6'}}) }}
+            
+                <div class="form-group space-y-2">
+                    {{ form_label(form.title, 'Nom du roadtrip', {'label_attr': {'class': 'block text-sm font-medium text-gray-600'}}) }}
+                    {{ form_widget(form.title, {'attr': {
+                        'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-300 transition-colors',
+                        'placeholder': 'Donnez un nom à votre aventure'
+                    }}) }}
+                </div>
 
-    <div class="form-group space-y-2">
-        {{ form_label(form.cover_image, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-        {{ form_widget(form.cover_image, {'attr': {'class': 'mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'}}) }}
-    </div>
+                <div class="form-group space-y-2">
+                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block text-sm font-medium text-gray-600'}}) }}
+                    {{ form_widget(form.description, {'attr': {
+                        'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-300 transition-colors',
+                        'rows': '4',
+                        'placeholder': 'Décrivez votre roadtrip'
+                    }}) }}
+                </div>
 
-    <div class="form-group space-y-2">
-        {{ form_label(form.vehicle, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-        {{ form_widget(form.vehicle, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'}}) }}
-    </div>
+                <div class="form-group space-y-2">
+                    {{ form_label(form.cover_image, 'Photo de couverture', {'label_attr': {'class': 'block text-sm font-medium text-gray-600'}}) }}
+                    {{ form_widget(form.cover_image, {'attr': {
+                        'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-red focus:border-primary-red file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100'
+                    }}) }}
+                </div>
 
-    {# Conteneur pour les checkpoints #}
-    <div id="checkpoints-container" 
-        class="space-y-4" 
-        data-prototype="{{ form_widget(form.checkpoints.vars.prototype)|e('html') }}">
-        <h2 class="text-xl font-semibold mt-6">Checkpoints</h2>
-        
-        {# Liste des checkpoints existants #}
-        <div class="checkpoints-list">
-            {% for checkpoint in form.checkpoints %}
-                <div class="checkpoint-item bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4">
-    {{ form_row(checkpoint.name, {
-        'label': 'Nom du lieu',
-        'label_attr': {'class': 'block text-sm font-medium text-gray-700'},
-        'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'}
-    }) }}
-    
-    <div class="form-group space-y-2">
-        {{ form_label(checkpoint.google_maps_coordinates, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-        {{ form_widget(checkpoint.google_maps_coordinates, {
-            'attr': {
-                'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm coordinates-input',
-                'readonly': 'readonly'
-            }
-        }) }}
-    </div>
+                <div class="form-group space-y-2">
+                    {{ form_label(form.vehicle, 'Véhicule', {'label_attr': {'class': 'block text-sm font-medium text-gray-600'}}) }}
+                    {{ form_widget(form.vehicle, {'attr': {
+                        'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-pink-200 focus:border-primary-red transition-colors'
+                    }}) }}
+                </div>
 
-    {{ form_row(checkpoint.arrival_date) }}
-    {{ form_row(checkpoint.departure_date) }}
-    <button type="button" class="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 remove-checkpoint">Supprimer</button>
-</div>
-            {% endfor %}
+                <div class="form-group space-y-2">
+                    {{ form_label(form.image_1, 'Photo 1', {'label_attr': {'class': 'block text-sm font-medium text-gray-600'}}) }}
+                    {{ form_widget(form.image_1, {'attr': {
+                        'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-red focus:border-primary-red file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100'
+                    }}) }}
+                </div>
+                                <div class="form-group space-y-2">
+                    {{ form_label(form.image_2, 'Photo 2', {'label_attr': {'class': 'block text-sm font-medium text-gray-600'}}) }}
+                    {{ form_widget(form.image_2, {'attr': {
+                        'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-red focus:border-primary-red file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100'
+                    }}) }}
+                </div>
+                                <div class="form-group space-y-2">
+                    {{ form_label(form.image_3, 'Photo 3', {'label_attr': {'class': 'block text-sm font-medium text-gray-600'}}) }}
+                    {{ form_widget(form.image_3, {'attr': {
+                        'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-red focus:border-primary-red file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100'
+                    }}) }}
+                </div>
+
+                {# Conteneur pour les checkpoints #}
+                <div id="checkpoints-container" 
+                    class="space-y-4" 
+                    data-prototype="{{ form_widget(form.checkpoints.vars.prototype)|e('html') }}">
+                    <h2 class="text-xl font-medium text-gray-800 mt-6 mb-4">Étapes du voyage</h2>
+                    
+                    {# Liste des checkpoints existants #}
+                    <div class="checkpoints-list space-y-4">
+                        {% for checkpoint in form.checkpoints %}
+                            <div class="checkpoint-item bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4 flex flex-col gap-5">
+                                {{ form_row(checkpoint.name, {
+                                    'label': 'Nom du lieu',
+                                    'label_attr': {'class': 'block text-sm font-medium text-gray-600'},
+                                    'attr': {'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-300 transition-colors'}
+                                }) }}
+                                
+                                <div class="form-group space-y-2">
+                                    {{ form_label(checkpoint.google_maps_coordinates, 'Coordonnées GPS', {'label_attr': {'class': 'block text-sm font-medium text-gray-600'}}) }}
+                                    <div class="flex items-center">
+                                        <span class="text-[#E87B85] mr-2">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                        </span>
+                                        {{ form_widget(checkpoint.google_maps_coordinates, {
+                                            'attr': {
+                                                'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-300 transition-colors coordinates-input',
+                                                'readonly': 'readonly',
+                                                'placeholder': 'Sélectionnez un point sur la carte'
+                                            }
+                                        }) }}
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {{ form_row(checkpoint.arrival_date, {
+                                        'label_attr': {'class': 'block text-sm font-medium text-gray-600'},
+                                        'attr': {'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-300 transition-colors'}
+                                    }) }}
+                                    {{ form_row(checkpoint.departure_date, {
+                                        'label_attr': {'class': 'block text-sm font-medium text-gray-600'},
+                                        'attr': {'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-300 transition-colors'}
+                                    }) }}
+                                </div>
+
+                                <button type="button" class="w-full mt-2 py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors remove-checkpoint">
+                                    Supprimer cette étape
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <button type="button" id="add-checkpoint" class="w-full py-3 px-4 border border-[#E87B85] text-[#E87B85] rounded-lg hover:bg-[#E87B85] hover:text-white transition-colors">
+                    Ajouter une nouvelle étape
+                </button>
+
+                {{ form_widget(form.submit, {'attr': {
+                    'class': 'w-full mt-6 py-3 px-4 bg-[#E87B85] text-white rounded-lg hover:bg-[#d66d76] transition-colors',
+                    'value': 'Créer le roadtrip'
+                }}) }}
+
+            {{ form_end(form) }}
         </div>
     </div>
-
-    <button type="button" id="add-checkpoint" class="mt-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Ajouter un checkpoint</button>
-
-    {{ form_row(form.submit, {'attr': {'class': 'mt-6 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600'}}) }}
-
-    {{ form_end(form) }}
 </div>
-
 {% endblock %}
 
 {% block javascripts %}
@@ -111,7 +182,7 @@
             const newForm = prototype.replace(/__name__/g, index);
             
             const checkpointDiv = document.createElement('div');
-            checkpointDiv.classList.add('checkpoint-item', 'bg-gray-50', 'border', 'border-gray-200', 'rounded-lg', 'p-4', 'space-y-4');
+            checkpointDiv.classList.add('checkpoint-item', 'bg-gray-50', 'border', 'border-gray-200', 'rounded-lg', 'p-4', 'space-y-4', 'flex', 'flex-col', 'gap-5');
             checkpointDiv.innerHTML = newForm;
 
             // Add remove button

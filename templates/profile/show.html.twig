@@ -13,6 +13,20 @@
     <meta property="og:image" content="{{ ogImageSecureUrl }}">
 {% endblock %}
 
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .bento-item {
+            transition: width 0.5s;
+            height: 200px
+        }
+        .bento-item:hover {
+            width: 80% !important;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 
 <div style="background-image: url('uploads/{{roadtrip.coverImage}}')" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat">
@@ -74,7 +88,27 @@
 
     <div class="mt-5 flex flex-col gap-5">
         <h2 class="text-primary-red text-xl md:text-3xl">Mes photos</h2>
+        {# J'ai potentiellement 3 images qui peuvent etre null : 
+        roadtrip.image1, roadtrip.image2, roadtrip.image3 #}
+    {% set images = [roadtrip.image1, roadtrip.image2, roadtrip.image3] %}
+    {% set imageLength = images|filter(i => i is not null)|length %}
+    <div class="flex flex-row gap-5">
+        {% set images = [roadtrip.image1, roadtrip.image2, roadtrip.image3] %}
+        {% set imageLength = images|filter(i => i is not null)|length %}
+        {% set width = 100 / imageLength %}
+        {% for image in images|filter(i => i is not null) %}
+            <div style="width: {{ width }}%;" class="bento-item rounded-md">
+                <img src="{{ asset('uploads/' ~ image) }}" alt="Photo du voyage" class="h-full object-cover object-center w-full rounded-md">
+            </div>
+        {% else %}
+            <p class="text-secondary-black">Aucune photo disponible.</p>
+        {% endfor %}
     </div>
 
 </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    </script>
 {% endblock %}

@@ -20,6 +20,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ProfileController extends AbstractController
 {
+
+    private const UPLOAD_DIRECTORY = 'upload_directory';
+
     private $fileUploadService;
     private $entityManager;
     private $httpClient;
@@ -117,10 +120,31 @@ class ProfileController extends AbstractController
 
             $oldImage = $roadtrip->getCoverImage();
             $directoryName = 'upload_directory';
-            $newFilename = $this->fileUploadService->uploadFile($file, $directoryName, $oldImage);
+            $newFilename = $this->fileUploadService->uploadFile($file, self::UPLOAD_DIRECTORY, $oldImage);
 
             $roadtrip->setCoverImage($newFilename);
             }
+
+            # Do the same for image_1, image_2, image_3
+
+            $images = [
+                "image_1" => "setImage1",
+                "image_2" => "setImage2",
+                "image_3" => "setImage3"
+            ];
+
+            foreach ($images as $field => $setter) {
+                $image = $form->get($field)->getData();
+
+                if ($image) {
+                    $newFilename = $this->fileUploadService->uploadFile($image, self::UPLOAD_DIRECTORY);
+                    $roadtrip->{$setter}($newFilename);
+                } else {
+                    $roadtrip->{$setter}(null);
+                }
+            }
+
+
 
             foreach ($roadtrip->getCheckpoints() as $checkpoint) {
                 $checkpoint->setRoadtrip($roadtrip);
@@ -177,84 +201,26 @@ class ProfileController extends AbstractController
         }
 
         $user = $roadtrip->getUserId();
-     
-//  $checkpoints = $roadtrip->getCheckpoints();
-//  if (count($checkpoints) >= 2) {
-//      $firstCheckpoint = $checkpoints[0];
-//      $lastCheckpoint = $checkpoints[count($checkpoints) - 1];
 
-//      $firstcoords = $firstCheckpoint->getGoogleMapsCoordinates();
-//      [$firstlat, $firstlng] = explode(',', $firstcoords);
+        $this->ogLocale = 'fr_FR';
+        $this->ogType = 'website';
+        $this->ogTitle = $roadtrip->getTitle();
+        $this->ogDescription = substr($roadtrip->getDescription(), 0, 245) . '...';
+        $this->ogUrl = $this->generateUrl('app_show_roadtrip', ['id' => $roadtrip->getId()], true);
+        $this->ogSiteName = 'Waw.travel';
+        $this->ogImageSecureUrl = $roadtrip->getCoverImage();
 
-//      $lastcoords = $lastCheckpoint->getGoogleMapsCoordinates();
-//      [$lastlat, $lastlng] = explode(',', $lastcoords);
-    
-//     //  dd($firstlat, $firstlng, $lastlat, $lastlng);
-
-//      $response = $this->httpClient->request('POST', 'https://routes.googleapis.com/directions/v2:computeRoutes', [
-//          'headers' => [
-//              'Content-Type' => 'application/json',
-//              'X-Goog-Api-Key' => 'AIzaSyA1SC4y43QhRkEtzuHnQ06IsTlQ1hAN1mk',
-//              'X-Goog-FieldMask' => 'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline',
-//          ],
-//          'json' => [
-//              'origin' => [
-//                  'location' => [
-//                      'latLng' => [
-//                          'latitude' => $firstlat,
-//                          'longitude' => $firstlng,
-//                      ],
-//                  ],
-//              ],
-//              'destination' => [
-//                  'location' => [
-//                      'latLng' => [
-//                          'latitude' => $lastlat,
-//                          'longitude' => $lastlng,
-//                      ],
-//                  ],
-//              ],
-//              'travelMode' => 'DRIVE',
-//              'routingPreference' => 'TRAFFIC_AWARE',
-//              'computeAlternativeRoutes' => false,
-//              'routeModifiers' => [
-//                  'avoidTolls' => false,
-//                  'avoidHighways' => false,
-//                  'avoidFerries' => false,
-//              ],
-//              'languageCode' => 'en-US',
-//              'units' => 'METRIC',
-//          ],
-//      ]);
-
-//      $data = $response->toArray();
-//      $distance = $data['routes'][0]['distanceMeters'] ?? null;
-//  } else {
-//      $distance = null;
-//  }
-
-//         dd($distance);
-
-
-    $this->ogLocale = 'fr_FR';
-    $this->ogType = 'website';
-    $this->ogTitle = $roadtrip->getTitle();
-    $this->ogDescription = substr($roadtrip->getDescription(), 0, 245) . '...';
-    $this->ogUrl = $this->generateUrl('app_show_roadtrip', ['id' => $roadtrip->getId()], true);
-    $this->ogSiteName = 'Waw.travel';
-    $this->ogImageSecureUrl = $roadtrip->getCoverImage();
-
-    return $this->render('profile/show.html.twig', [
-        'roadtrip' => $roadtrip,
-        'username' => $user->getUsername(),
-        'vehicle' => $vehicle,
-        'ogLocale' => $this->ogLocale,
-        'ogType' => $this->ogType,
-        'ogTitle' => $this->ogTitle,
-        'ogDescription' => $this->ogDescription,
-        'ogUrl' => $this->ogUrl,
-        'ogSiteName' => $this->ogSiteName,
-        'ogImageSecureUrl' => $this->ogImageSecureUrl,
-    ]);
+        return $this->render('profile/show.html.twig', [
+            'roadtrip' => $roadtrip,
+            'username' => $user->getUsername(),
+            'vehicle' => $vehicle,
+            'ogLocale' => $this->ogLocale,
+            'ogType' => $this->ogType,
+            'ogTitle' => $this->ogTitle,
+            'ogDescription' => $this->ogDescription,
+            'ogUrl' => $this->ogUrl,
+            'ogSiteName' => $this->ogSiteName,
+            'ogImageSecureUrl' => $this->ogImageSecureUrl,
+        ]);
     }
 }

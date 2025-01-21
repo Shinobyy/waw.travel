@@ -29,7 +29,7 @@ class RoadtripType extends AbstractType
                 'label' => 'Images de couverture',
                 'multiple' => false,
                 'mapped' => false,
-                'required' => false,
+                'required' => true,
                 'attr' => ['accept' => 'image/*'],
             ])
             ->add('vehicle', EntityType::class, [
@@ -43,11 +43,32 @@ class RoadtripType extends AbstractType
                 'allow_delete' => true,
                 'by_reference' => false,
                 'prototype' => true,
-                'required' => false,
+                'required' => true,
                 'label' => 'Checkpoints',
                 'entry_options' => [
                     'label' => false,
                 ],
+            ])
+            ->add('image_1', FileType::class, [
+                'label' => 'Image 1',
+                'multiple' => false,
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['accept' => 'image/*'],
+            ])
+            ->add('image_2', FileType::class, [
+                'label' => 'Image 2',
+                'multiple' => false,
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['accept' => 'image/*'],
+            ])
+            ->add('image_3', FileType::class, [
+                'label' => 'Image 3',
+                'multiple' => false,
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['accept' => 'image/*'],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Soumettre',

@@ -15,11 +15,11 @@
     {% endblock %}
     </head>
     <body class="antialiased">
-    {% if app.request.get('_route') != 'app_login' and app.request.get('_route') != 'app_registration' %}
+    {% if app.request.get('_route') != 'app_login' and app.request.get('_route') != 'app_registration' and app.request.get('_route') != 'app_add_roadtrip' %}
         {{ include('partials/_navbar.html.twig') }}
     {% endif %}
         {% block body %}{% endblock %}
-    {% if app.request.get('_route') != 'app_login' and app.request.get('_route') != 'app_registration' %}
+    {% if app.request.get('_route') != 'app_login' and app.request.get('_route') != 'app_registration' and app.request.get('_route') != 'app_add_roadtrip' %}
         {{ include('partials/_footer.html.twig') }}
     {% endif %}
     </body>
