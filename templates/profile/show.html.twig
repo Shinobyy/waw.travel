@@ -28,6 +28,67 @@
         .bento-item:hover {
             width: 80% !important;
         }
+    
+			.modal-content {
+				margin: auto;
+				display: block;
+				width: 80%;
+				max-width: 700px;
+			}
+
+			.modal-content { 
+				animation-name: zoom;
+				animation-duration: 0.6s;
+			}
+
+			@keyframes zoom {
+				from {transform:scale(0)} 
+				to {transform:scale(1)}
+			}
+
+			#img-viewer {
+				display: none;
+				position: fixed;
+				z-index: 1000;
+				padding-top: 100px;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				overflow: auto;
+				background-color: rgb(0,0,0);
+			}
+			
+			#img-viewer .close {
+				position: absolute;
+				top: 15px;
+				right: 35px;
+				color: #f1f1f1;
+				font-size: 40px;
+				font-weight: bold;
+				transition: 0.3s;
+			}
+
+			#img-viewer .close:hover{
+				cursor: pointer;
+			}
+
+			@media only screen and (max-width: 700px){
+				.modal-content {
+					width: 100%;
+				}
+			}
+			
+			.img-container{
+				position:relative;
+				width:300px;
+			}
+			.expand-icon{
+				position:absolute; 
+				right:10px; 
+				top:15px; 
+				cursor:pointer;
+			}
     </style>
 {% endblock %}
 
@@ -105,13 +166,26 @@
         {% set imageLength = images|filter(i => i is not null)|length %}
         {% set width = 100 / imageLength %}
         {% for image in images|filter(i => i is not null) %}
-            <div style="width: {{ width }}%;" class="bento-item rounded-md">
-                <img src="{{ asset(image) }}" alt="Photo du voyage" class="h-full object-cover object-center w-full rounded-md">
+            <div style="width: {{ width }}%;" class="bento-item rounded-md img-container">
+                <img src="{{ asset(image) }}" alt="Photo du voyage" class="h-full object-cover object-center w-full rounded-md img-source">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-expand expand-icon stroke-primary-red" onclick="full_view(this);"><path d="m21 21-6-6m6 6v-4.8m0 4.8h-4.8"/><path d="M3 16.2V21m0 0h4.8M3 21l6-6"/><path d="M21 7.8V3m0 0h-4.8M21 3l-6 6"/><path d="M3 7.8V3m0 0h4.8M3 3l6 6"/></svg>
+
             </div>
         {% else %}
             <p class="text-secondary-black">Aucune photo disponible.</p>
         {% endfor %}
     </div>
+
+
+
+
+
+    <div id="img-viewer">
+        <span class="close" onclick="close_model()">&times;</span>
+        <img class="modal-content" id="full-image" >
+    </div>
+
+
 </div>
 {% endblock %}
 {% block javascripts %}
@@ -130,5 +204,16 @@
             }
         });
         
+    </script>
+    <script>
+        function full_view(ele){
+            let src=ele.parentElement.querySelector(".img-source").getAttribute("src");
+            document.querySelector("#img-viewer").querySelector("img").setAttribute("src",src);
+            document.querySelector("#img-viewer").style.display="block";
+        }
+        
+        function close_model(){
+            document.querySelector("#img-viewer").style.display="none";
+        }
     </script>
 {% endblock %}
