@@ -34,13 +34,31 @@ class RoadtripFixtures extends Fixture
         for ($i = 0; $i < 15; $i++) {
             $roadtrip = new Roadtrip();
 
+            $uploadDir = __DIR__ . '/../../public/uploads';
+
+            if (!is_dir($uploadDir)) {
+                throw new \Exception("Le répertoire 'uploads' est introuvable");
+            }
+            
+            $files = scandir($uploadDir);
+
+            $files = array_diff($files, ['.', '..']);
+
+            if (empty($files)) {
+                throw new \Exception("Aucun fichier trouvé dans le répertoire 'uploads'");
+            }
+
+            $randomFile = 'uploads/' . $files[array_rand($files)];
 
             $roadtrip->setUserId($user);
             $roadtrip->setTitle($faker->sentence(4));
             $roadtrip->setDescription($faker->paragraph());
             $roadtrip->setVehicle($faker->randomElement($vehicles));
-            $roadtrip->setCoverImage('https://picsum.photos/600/400');
-
+            $roadtrip->setCoverImage($randomFile);
+            $roadtrip->setImage1($randomFile);
+            $roadtrip->setImage2($randomFile);
+            $roadtrip->setImage3($randomFile);
+            
             $checkpointCount = $faker->numberBetween(2, 5);
             for ($j = 0; $j < $checkpointCount; $j++) {
                 $checkpoint = new Checkpoint();

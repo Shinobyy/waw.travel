@@ -50,6 +50,13 @@ class RoadtripRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function getVehicle() {
+        return $this->createQueryBuilder('r')
+            ->select('r.vehicle')
+            ->getQuery()
+            ->getResult();
+    }
 }
 
 

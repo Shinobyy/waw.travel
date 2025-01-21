@@ -34,6 +34,10 @@
 {% block body %}
 
 <div style="background-image: url('uploads/{{roadtrip.coverImage}}')" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat">
+
+    <a href={{ path('app_delete_roadtrip', { id: roadtrip.id })}} class="m-5 absolute top-0 right-0 min-w-36 justify-center px-4 py-2 rounded-full flex gap-2 text-primary-red border-solid border-2 border-primary-red hover:cursor-pointer" id="delete">Supprimer</a>
+
+
     <h1 class="text-white text-2xl md:text-4xl font-bold mt-5">{{ roadtrip.title }}</h1>
     
     <div class="flex flex-row gap-2">
@@ -116,4 +120,15 @@
       var checkpoints = {{ roadtrip.checkpoints|map(c => c.googleMapsCoordinates)|json_encode|raw }};
     </script>
     <script type="module" src="{{ asset('js/map_uglified.js') }}" defer></script>
+    <script>
+        let deleteButton = document.getElementById('delete');
+
+        deleteButton.addEventListener('click', function() {
+            let confirmation = confirm('Êtes-vous sûr de vouloir supprimer ce roadtrip ?');
+            if (confirmation) {
+                window.location.href = deleteButton.href;
+            }
+        });
+        
+    </script>
 {% endblock %}

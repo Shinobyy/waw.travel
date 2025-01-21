@@ -46,23 +46,22 @@ class ProfileController extends AbstractController
     }
 
 
-    #[Route('/profile', name: 'app_profile')]
+    #[Route('/profil', name: 'app_profile')]
     public function index(RoadtripRepository $roadtripRepository, Security $security): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $user = $security->getUser();
 
         $roadtrips = $user->getRoadtrips();
 
         $begin = null;
-    $end = null;
+        $end = null;
 
-    // Parcourir les roadtrips pour récupérer le premier et dernier checkpoint
     foreach ($roadtrips as $roadtrip) {
         $checkpoints = $roadtrip->getCheckpoints();
         
-        // Assurez-vous qu'il y a au moins un checkpoint
         if (count($checkpoints) > 0) {
-            // Premier point de départ (premier checkpoint)
             if (!$begin) {
                 $begin = [
                     'name' => $checkpoints[0]->getName(),
@@ -72,7 +71,6 @@ class ProfileController extends AbstractController
                 ];
             }
 
-            // Dernier point d'arrivée (dernier checkpoint)
             $end = [
                 'name' => $checkpoints[count($checkpoints) - 1]->getName(),
                 'arrivalDate' => $checkpoints[count($checkpoints) - 1]->getArrivalDate(),
@@ -94,7 +92,7 @@ class ProfileController extends AbstractController
     ]);
     }
 
-    #[Route('profile/add', name: 'app_add_roadtrip')]
+    #[Route('profil/ajouter', name: 'app_add_roadtrip')]
     public function addRoadtrip(Request $request, VehiclesRepository $vehiclesRepository): Response
     {
         $roadtrip = new Roadtrip();
@@ -124,8 +122,6 @@ class ProfileController extends AbstractController
 
             $roadtrip->setCoverImage($newFilename);
             }
-
-            # Do the same for image_1, image_2, image_3
 
             $images = [
                 "image_1" => "setImage1",
@@ -190,16 +186,21 @@ class ProfileController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_show_roadtrip', requirements: ['id' => '\d+'])]
-    public function showRoadtirp(int $id, RoadtripRepository $roadtripRepository, Roadtrip $roadtripEntity): Response
+    public function showRoadtirp(int $id, RoadtripRepository $roadtripRepository): Response
     {
         $roadtrip = $roadtripRepository->find($id);
-        $vehicle = $roadtripEntity->getVehicle();
-
+        
+        if (!$roadtrip) {
+            $this->addFlash('error', 'Le roadtrip demandé n\'existe pas.');
+            return $this->redirectToRoute('app_main');
+        }
+        
         if (!$id)
         {
             $this->redirectToRoute('app_main');
         }
-
+        
+        $vehicle = $roadtrip->getVehicle();
         $user = $roadtrip->getUserId();
 
         $this->ogLocale = 'fr_FR';
@@ -222,5 +223,20 @@ class ProfileController extends AbstractController
             'ogSiteName' => $this->ogSiteName,
             'ogImageSecureUrl' => $this->ogImageSecureUrl,
         ]);
+    }
+
+    #[Route('/{id}/supprimer', name: 'app_delete_roadtrip', methods: ['GET'])]
+    public function deleteRoadTrip(int $id, RoadtripRepository $roadtripRepository, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $roadtrip = $roadtripRepository->find($id);
+
+        $em->remove($roadtrip);
+        $em->flush();
+
+        $this->fileUploadService->deleteFile($roadtrip->getCoverImage(), self::UPLOAD_DIRECTORY);
+
+        return $this->redirectToRoute('app_profile');
     }
 }

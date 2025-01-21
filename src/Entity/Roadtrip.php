@@ -160,7 +160,6 @@ class Roadtrip
     public function removeCheckpoints(Checkpoint $checkpoints): static
     {
         if ($this->checkpoints->removeElement($checkpoints)) {
-            // set the owning side to null (unless already changed)
             if ($checkpoints->getRoadtrip() === $this) {
                 $checkpoints->setRoadtrip(null);
             }
