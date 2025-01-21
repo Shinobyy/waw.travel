@@ -40,28 +40,32 @@ class SecurityController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!$user) {
-            throw $this->createNotFoundException('Utilisateur non trouvé.');
+        if(!$user) {
+            return $this->redirectToRoute('app_main');
         }
-        
+
         foreach ($user->getRoadtrips() as $roadtrip) {
-            if ($roadtrip->getCoverImage()) {
-                unlink($this->getParameter('upload_directory').'/roadtrips/'.$roadtrip->getCoverImage());
+            $uploadDir = $this->getParameter('app.path.uploads').'/roadtrips/';
+
+            if ($roadtrip->getCoverImage() && file_exists($uploadDir.$roadtrip->getCoverImage())) {
+                unlink($uploadDir.$roadtrip->getCoverImage());
             }
-            if ($roadtrip->getImage1()) {
-                unlink($this->getParameter('upload_directory').'/roadtrips/'.$roadtrip->getImage1());
+            if ($roadtrip->getImage1() && file_exists($uploadDir.$roadtrip->getImage1())) {
+                unlink($uploadDir.$roadtrip->getImage1());
             }
-            if ($roadtrip->getImage2()) {
-                unlink($this->getParameter('upload_directory').'/roadtrips/'.$roadtrip->getImage2());
+            if ($roadtrip->getImage2() && file_exists($uploadDir.$roadtrip->getImage2())) {
+                unlink($uploadDir.$roadtrip->getImage2());
             }
-            if ($roadtrip->getImage3()) {
-                unlink($this->getParameter('upload_directory').'/roadtrips/'.$roadtrip->getImage3());
+            if ($roadtrip->getImage3() && file_exists($uploadDir.$roadtrip->getImage3())) {
+                unlink($uploadDir.$roadtrip->getImage3());
             }
+
+            $em->remove($roadtrip);
         }
 
         $em->remove($user);
         $em->flush();
 
-        return $this->redirectToRoute('app_home');
+        return $this->redirectToRoute('app_main');
     }
 }
