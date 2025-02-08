@@ -2,6 +2,14 @@
 
 {% block title %}Waw.travel | Partagez vos roadtrips !{% endblock %}
 
+{% block head %}
+    {{ parent() }}
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1SC4y43QhRkEtzuHnQ06IsTlQ1hAN1mk&callback=initMap&v=weekly&libraries=marker"
+    defer
+    ></script>
+{% endblock %}
+
 {% block body %}
 
     <div class="bg-landing md:rounded-md md:mx-16 lg:mx-72 gap-10 h-[60dvh] flex flex-col items-center justify-center">
@@ -20,54 +28,56 @@
         <p>Waw est une plateforme qui vous permet de créer et de partager vos roadtrips. Voici comment ça marche.</p>
 
 
-        <ul class="mx-5 flex flex-wrap gap-5 mt-7 justify-center">
-        
-        <li class="flex flex-col gap-5 max-w-56 rounded-md border border-[#E0E0E0] p-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+<ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-7">
+  <li class="flex flex-col gap-5 w-auto rounded-md border border-[#E0E0E0] p-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+    <h3 class="font-bold text-xl">Créer votre journal</h3>
+    <p class="text-secondary-black">Faites de votre voyage une expérience inoubliable en créant votre roadtrip personnalisé.</p>
+  </li>
 
-            <h3 class="font-bold text-xl">Créer votre journal</h3>
-            <p class="text-secondary-black">Faites de votre voyage une expérience inoubliable en créant votre roadtrip personnalisé.</p>
-        </li>
+  <li class="flex flex-col gap-5 w-auto rounded-md border border-[#E0E0E0] p-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+    <h3 class="font-bold text-xl">Partagez facilement</h3>
+    <p class="text-secondary-black">Partagez facilement votre roadtrip avec vos proches en un clic.</p>
+  </li>
 
-        <li class="flex flex-col gap-5 max-w-56 rounded-md border border-[#E0E0E0] p-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-            
-            <h3 class="font-bold text-xl">Partagez facilement</h3>
-            <p class="text-secondary-black">Partagez facilement votre roadtrip avec vos proches en un clic.</p>
-        </li>
+  <li class="flex flex-col gap-5 w-auto rounded-md border border-[#E0E0E0] p-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <h3 class="font-bold text-xl">Suivez votre roadtrip</h3>
+    <p class="text-secondary-black">Retrouvez sur votre roadtrip les différents points où vous êtes allés sur notre carte.</p>
+  </li>
 
-        <li class="flex flex-col gap-5 max-w-56 rounded-md border border-[#E0E0E0] p-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            
-            <h3 class="font-bold text-xl">Suivez votre roadtrip</h3>
-            <p class="text-secondary-black">Retrouvez sur votre roadtrip les différents points où vous êtes allés sur notre carte.</p>
-        </li>
+  <li class="flex flex-col gap-5 w-auto rounded-md border border-[#E0E0E0] p-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+    <h3 class="font-bold text-xl">Ajouter des photos</h3>
+    <p class="text-secondary-black">Ajoutez des photos à vos roadtrips pour partager la beauté de votre voyage.</p>
+  </li>
+</ul>
 
-        <li class="flex flex-col gap-5 max-w-56 rounded-md border border-[#E0E0E0] p-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-            
-            <h3 class="font-bold text-xl">Ajouter des photos</h3>
-            <p class="text-secondary-black">Ajoutez des photos à vos roadtrips pour partager la beauté de votre voyage.</p>
-        </li>
 
-        </ul>
-
+    </section>
+    <section class="flex flex-col gap-5 mt-10">
+        <h2 class="md:text-3xl text-xl">Là où vont nos voyageurs</h2>
+        <div class="h-[50vh] w-full bg-blue-200 rounded-md" id="map">
+        </div>
     </section>
 </main>
 
 
 
-    <section class="flex flex-col gap-5 mt-10">
-        <h2 class="mx-5 md:mx-16 md:text-3xl lg:mx-72 text-xl">Là où vont nos voyageurs</h2>
 
-        <div class="h-[33vh] w-screen bg-blue-200"></div>
-    </section>
-
-    <section class="flex flex-col gap-5 mt-10 items-center">
-    
-        <h2 class="text-xl md:text-2xl font-bold">Prêt à partager votre voyage ?</h2>
-                <a class="px-7 py-2 rounded-full bg-primary-red text-white outline-2 outline-primary-red hover:outline-primary-red hover:outline hover:bg-transparent transition-all hover:cursor-pointer" href={{path('app_registration')}}>
+    <section class="flex flex-col gap-5 mt-10 md:my-32 items-center">
+        <h2 class="text-xl md:text-4xl font-bold">Prêt à partager votre voyage ?</h2>
+                <a class="px-7 py-2 rounded-full bg-primary-red text-white outline-2 outline-primary-red hover:outline-primary-red hover:outline hover:bg-transparent transition-all hover:cursor-pointer hover:text-primary-red" href={{path('app_registration')}}>
         Inscrivez-vous - C'est gratuit !</a>
     </section>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+      var checkpoints = {{ checkpoints|map(c => c.googleMapsCoordinates)|json_encode|raw }};
+    </script>
+    <script type="module" src="{{ asset('js/map_uglified.js') }}" defer></script>
 {% endblock %}

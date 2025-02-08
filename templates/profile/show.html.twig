@@ -2,20 +2,120 @@
 
 {% block title %}{{roadtrip.title}} | {{username}} {% endblock %}
 
+{% block head %}
+    {{ parent() }}
+    <meta property="og:locale" content="{{ ogLocale }}">
+    <meta property="og:type" content="{{ ogType }}">
+    <meta property="og:title" content="{{ ogTitle }}">
+    <meta property="og:description" content="{{ ogDescription }}">
+    <meta property="og:url" content="{{ ogUrl }}">
+    <meta property="og:site_name" content="{{ ogSiteName }}">
+    <meta property="og:image" content="{{ ogImageSecureUrl }}">
+
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1SC4y43QhRkEtzuHnQ06IsTlQ1hAN1mk&callback=initMap&v=weekly&libraries=marker"
+        defer
+        ></script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .bento-item {
+            transition: width 0.5s;
+            height: 200px
+        }
+        .bento-item:hover {
+            width: 80% !important;
+        }
+    
+			.modal-content {
+				margin: auto;
+				display: block;
+				width: 80%;
+				max-width: 700px;
+			}
+
+			.modal-content { 
+				animation-name: zoom;
+				animation-duration: 0.6s;
+			}
+
+			@keyframes zoom {
+				from {transform:scale(0)} 
+				to {transform:scale(1)}
+			}
+
+			#img-viewer {
+				display: none;
+				position: fixed;
+				z-index: 1000;
+				padding-top: 100px;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				overflow: auto;
+				background-color: rgb(0,0,0);
+			}
+			
+			#img-viewer .close {
+				position: absolute;
+				top: 15px;
+				right: 35px;
+				color: #f1f1f1;
+				font-size: 40px;
+				font-weight: bold;
+				transition: 0.3s;
+			}
+
+			#img-viewer .close:hover{
+				cursor: pointer;
+			}
+
+			@media only screen and (max-width: 700px){
+				.modal-content {
+					width: 100%;
+				}
+			}
+			
+			.img-container{
+				position:relative;
+				width:300px;
+			}
+			.expand-icon{
+				position:absolute; 
+				right:10px; 
+				top:15px; 
+				cursor:pointer;
+			}
+    </style>
+{% endblock %}
+
 {% block body %}
 
-<div style="background-image: url({{roadtrip.coverImage}})" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat">
-{# <div style="background-image: url({{asset('uploads/' ~ roadtrip.coverImage)}})" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat"> #}
+<div style="background-image: url('{{roadtrip.coverImage}}')" class="h-[50dvh] flex flex-col items-center justify-center relative gap-5 bg-center bg-cover bg-no-repeat">
+
+    <a href={{ path('app_delete_roadtrip', { id: roadtrip.id })}} class="m-5 absolute top-0 right-0 min-w-36 justify-center px-4 py-2 rounded-full flex gap-2 text-primary-red border-solid border-2 border-primary-red hover:cursor-pointer" id="delete">Supprimer</a>
+
+
     <h1 class="text-white text-2xl md:text-4xl font-bold mt-5">{{ roadtrip.title }}</h1>
     
     <div class="flex flex-row gap-2">
-    {% for checkpoint in roadtrip.checkpoints %}
+    {% set firstCheckpoint = roadtrip.checkpoints|first %}
+    {% set lastCheckpoint = roadtrip.checkpoints|last %}
+
+    {% if firstCheckpoint %}
         <span class="text-white flex gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-        {{ checkpoint.arrivalDate|date('d/m/Y') }} - {{ checkpoint.departureDate|date('d/m/Y') }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+            {{ firstCheckpoint.arrivalDate|date('d/m/Y') }}
+            {% if lastCheckpoint and lastCheckpoint != firstCheckpoint %}
+                - {{ lastCheckpoint.departureDate|date('d/m/Y') }}
+            {% endif %}
+        </span>
     {% else %}
-        <li>Aucun checkpoint disponible.</li>
-    {% endfor %}
+        <span class="text-white">Aucun checkpoint disponible.</span>
+    {% endif %}
     </div>
     <a class="min-w-36 px-4 py-2 justify-center rounded-full flex gap-2 bg-primary-red text-white outline-2 outline-primary-red hover:outline-primary-red hover:outline hover:bg-transparent transition-all hover:cursor-pointer" href={{path('app_show_roadtrip', { id: roadtrip.id })}}>
     Partagez le trajet à vos proches !</a>
@@ -25,20 +125,95 @@
 </div>
 
 <div class="mx-5 md:mx-16 lg:mx-72">
-    <p class="font-semibold">{{vehicle.type}}</p>
-    
-    <div class="mt-5 flex flex-col gap-5">
+
+    <div class="flex gap-4 items-center my-9">
+        {% if vehicle.type == 'Vélo' %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D57275" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bike fill-primary-red"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
+        {% elseif vehicle.type == 'Voiture' %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D57275" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-car fill-primary-red"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+        {% elseif vehicle.type == 'Moto' %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 640 512" class="fill-primary-red"><path d="M280 32c-13.3 0-24 10.7-24 24s10.7 24 24 24l57.7 0 16.4 30.3L256 192l-45.3-45.3c-12-12-28.3-18.7-45.3-18.7L64 128c-17.7 0-32 14.3-32 32l0 32 96 0c88.4 0 160 71.6 160 160c0 11-1.1 21.7-3.2 32l70.4 0c-2.1-10.3-3.2-21-3.2-32c0-52.2 25-98.6 63.7-127.8l15.4 28.6C402.4 276.3 384 312 384 352c0 70.7 57.3 128 128 128s128-57.3 128-128s-57.3-128-128-128c-13.5 0-26.5 2.1-38.7 6L418.2 128l61.8 0c17.7 0 32-14.3 32-32l0-32c0-17.7-14.3-32-32-32l-20.4 0c-7.5 0-14.7 2.6-20.5 7.4L391.7 78.9l-14-26c-7-12.9-20.5-21-35.2-21L280 32zM462.7 311.2l28.2 52.2c6.3 11.7 20.9 16 32.5 9.7s16-20.9 9.7-32.5l-28.2-52.2c2.3-.3 4.7-.4 7.1-.4c35.3 0 64 28.7 64 64s-28.7 64-64 64s-64-28.7-64-64c0-15.5 5.5-29.7 14.7-40.8zM187.3 376c-9.5 23.5-32.5 40-59.3 40c-35.3 0-64-28.7-64-64s28.7-64 64-64c26.9 0 49.9 16.5 59.3 40l66.4 0C242.5 268.8 190.5 224 128 224C57.3 224 0 281.3 0 352s57.3 128 128 128c62.5 0 114.5-44.8 125.8-104l-66.4 0zM128 384a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+        {% endif %}
+
+        <p class="text-xl">Trajet réalisé en {{vehicle.type|lower}}</p>
+    </div>
+    <div class="mt-5 flex flex-col gap-9">
         <h2 class="text-primary-red text-xl md:text-3xl">Que dire sur ce voyage ?</h2>
         <p class="text-secondary-black">{{ roadtrip.description }}</p>
     </div>
 
     <div class="mt-5 flex flex-col gap-5">
         <h2 class="text-primary-red text-xl md:text-3xl">Mes arrêts</h2>
+
+            <div class="flex justify-between flex-wrap">
+        {% for checkpoint in roadtrip.checkpoints %}
+                <p class="text-secondary-black">{{ checkpoint.name }}</p>
+        {% else %}
+        {% endfor %}
+            </div>
+        <div id="map" class="h-[50vh] w-full bg-blue-200"></div>
+
     </div>
 
     <div class="mt-5 flex flex-col gap-5">
         <h2 class="text-primary-red text-xl md:text-3xl">Mes photos</h2>
+        {# J'ai potentiellement 3 images qui peuvent etre null : 
+        roadtrip.image1, roadtrip.image2, roadtrip.image3 #}
+    {% set images = [roadtrip.image1, roadtrip.image2, roadtrip.image3] %}
+    {% set imageLength = images|filter(i => i is not null)|length %}
+    <div class="flex flex-row gap-5">
+        {% set images = [roadtrip.image1, roadtrip.image2, roadtrip.image3] %}
+        {% set imageLength = images|filter(i => i is not null)|length %}
+        {% set width = 100 / imageLength %}
+        {% for image in images|filter(i => i is not null) %}
+            <div style="width: {{ width }}%;" class="bento-item rounded-md img-container">
+                <img src="{{ asset(image) }}" alt="Photo du voyage" class="h-full object-cover object-center w-full rounded-md img-source">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-expand expand-icon stroke-primary-red" onclick="full_view(this);"><path d="m21 21-6-6m6 6v-4.8m0 4.8h-4.8"/><path d="M3 16.2V21m0 0h4.8M3 21l6-6"/><path d="M21 7.8V3m0 0h-4.8M21 3l-6 6"/><path d="M3 7.8V3m0 0h4.8M3 3l6 6"/></svg>
+
+            </div>
+        {% else %}
+            <p class="text-secondary-black">Aucune photo disponible.</p>
+        {% endfor %}
     </div>
 
+
+
+
+
+    <div id="img-viewer">
+        <span class="close" onclick="close_model()">&times;</span>
+        <img class="modal-content" id="full-image" >
+    </div>
+
+
 </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+      var checkpoints = {{ roadtrip.checkpoints|map(c => c.googleMapsCoordinates)|json_encode|raw }};
+    </script>
+    <script type="module" src="{{ asset('js/map_uglified.js') }}" defer></script>
+    <script>
+        let deleteButton = document.getElementById('delete');
+
+        deleteButton.addEventListener('click', function() {
+            let confirmation = confirm('Êtes-vous sûr de vouloir supprimer ce roadtrip ?');
+            if (confirmation) {
+                window.location.href = deleteButton.href;
+            }
+        });
+        
+    </script>
+    <script>
+        function full_view(ele){
+            let src=ele.parentElement.querySelector(".img-source").getAttribute("src");
+            document.querySelector("#img-viewer").querySelector("img").setAttribute("src",src);
+            document.querySelector("#img-viewer").style.display="block";
+        }
+        
+        function close_model(){
+            document.querySelector("#img-viewer").style.display="none";
+        }
+    </script>
 {% endblock %}

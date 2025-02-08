@@ -3,17 +3,30 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-    <div class="w-screen min-h-dvh bg-login bg-center bg-no-repeat bg-cover flex items-center justify-center">
+<div class="min-h-dvh bg-login bg-center bg-no-repeat bg-cover flex items-center justify-center
+md:items-baseline md:justify-between md:h-screen">
 
-        <div class="bg-white flex flex-col gap-8 w-full m-6 p-4 rounded-lg">
+    <div class="hidden md:flex flex-col ml-10 max-w-[500px] gap-10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 48 48" fill="none">
+                <path d="M43.9706 14.4737C45.0341 14.2711 46.1989 14.2711 47.3131 14.423C47.7689 14.4737 47.9715 13.9166 47.617 13.6634C45.5405 12.144 43.0083 11.5869 40.8307 11.9415C40.1723 10.0676 38.6023 8.39637 36.6272 7.48478C36.222 7.33285 35.8675 7.738 36.0701 8.09251C36.5765 8.95346 36.9311 9.81441 37.1336 10.6754C34.7027 9.40925 31.107 9.61183 28.3216 11.5363C27.9671 11.7895 28.119 12.296 28.5242 12.296C30.8031 12.3973 32.677 12.7011 33.9937 13.2582C31.5628 13.5621 29.2838 15.5878 28.3216 18.4239C28.1696 18.829 28.6254 19.1835 28.9799 18.9303C31.6134 16.9046 34.1963 16.6007 36.222 17.6642C32.4237 22.7286 30.7018 28.2488 30.0435 30.9836C28.2709 30.6797 26.2958 30.5278 24.1181 30.5278C23.6623 30.5278 23.2572 30.5278 22.8014 30.5785C21.8898 26.5776 19.864 19.9432 15.6606 13.7646C18.446 12.4985 21.8898 13.1063 25.3336 15.9423C25.7894 16.2968 26.3971 15.841 26.2452 15.3346C25.131 11.435 22.1937 8.59895 18.9524 8.04186C20.7756 7.38349 23.3078 7.07963 26.3465 7.07963C26.9035 7.07963 27.1568 6.37061 26.701 6.06675C23.1052 3.28133 18.2434 2.77489 14.9009 4.34485C15.2554 3.18004 15.8125 2.01523 16.5215 0.901058C16.8254 0.445261 16.3696 -0.162467 15.8125 0.0401093C13.0777 1.20492 10.9 3.33197 9.9378 5.81353C7.05109 5.2058 3.55665 5.81353 0.720586 7.738C0.214145 8.04187 0.518009 8.85217 1.12574 8.75088C2.64506 8.59895 4.16438 8.64959 5.58241 9.0041C2.29055 10.7766 -0.191007 15.0814 0.0115693 19.7406C0.0115693 20.2977 0.77123 20.5003 1.07509 20.0445C2.59441 17.7655 4.56953 15.6891 6.494 14.5243C4.77211 17.411 5.12662 21.4625 7.15238 24.6531C7.45624 25.1595 8.2159 24.9063 8.2159 24.3492C8.31719 19.8419 9.98844 16.702 12.6219 15.5878C16.0151 21.3106 16.7241 27.2359 16.6735 31.3888C8.6717 33.1107 5.48112 37.4154 5.48112 39.6437C5.48112 42.4798 5.43048 38.5296 14.1413 38.5296C22.852 38.5296 42.7551 45.6197 42.7551 39.6437C42.7551 37.7699 40.4255 34.3768 34.8547 32.351C34.804 29.3124 35.2092 24.096 38.4504 19.2342C40.3749 20.1458 41.5397 22.5767 41.4384 25.9192C41.4384 26.3244 41.9955 26.5269 42.198 26.1724C43.8186 23.8934 44.2238 20.9054 43.059 18.6771C44.477 19.6393 45.8444 21.2093 46.9079 22.9818C47.1105 23.3364 47.6676 23.2351 47.7182 22.7793C48.0727 19.1835 46.3508 15.8917 43.9706 14.4737Z" fill="white"/>
+                <path d="M42.7045 43.29C41.4384 43.8977 40.2229 44.3028 36.6779 44.0496C33.6899 43.847 29.8409 43.0874 26.1439 42.3277C21.5859 41.4161 17.2305 40.5552 14.1413 40.5552C10.8494 40.5552 8.21591 41.1123 6.29144 42.1758C5.93693 42.3784 5.73436 42.7835 5.83564 43.1887C5.93693 43.5938 6.34208 43.8977 6.74724 43.847C6.84852 43.847 16.5722 43.6951 26.9036 46.6831C30.1954 47.6453 32.9302 47.9998 35.1079 47.9998C41.7929 47.9998 43.768 44.6067 43.8693 44.4041C44.0719 44.0496 44.0212 43.6445 43.7174 43.3406C43.5148 43.2393 43.059 43.138 42.7045 43.29Z" fill="white"/>
+            </svg>
+            <h1 class="text-primary-white text-6xl font-semibold">Where are we ?</h1>
+            <p class="text-primary-white text-2xl">Retrouvez vos itinéraires, vos récits de voyage et partagez vos aventures avec vos proches. Accédez à vos souvenirs et poursuivez l’exploration dès maintenant.</p>
+    </div>
 
-            <div class="flex flex-col gap-2">
+    <div class="bg-primary-white flex flex-col gap-8 w-full m-6 p-4 rounded-lg
+    md:m-0 md:rounded-none md:w-1/2 md:h-full">
+            
+            <span class="hidden md:flex text-lg gap-2 flex-wrap md:ml-auto md:p-8"><p>Pas encore chez nous ?</p><a  class="underline" href={{ path('app_registration') }}>S'enregistrer</a></span>
+
+            <div class="flex flex-col gap-2 md:mx-24">
                 <h1 class="text-3xl">Connexion</h1>
 
-                <span class="text-lg flex gap-2 flex-wrap"><p>Pas encore chez nous ?</p><a  class="underline" href={{ path('app_registration') }}>S'enregistrer</a></span>
+                <span class="text-lg flex gap-2 flex-wrap md:hidden"><p>Pas encore chez nous ?</p><a  class="underline" href={{ path('app_registration') }}>S'enregistrer</a></span>
             </div>
 
-            <form method="post" action="{{ path('app_login') }}" class="flex flex-col items-center gap-8">
+            <form method="post" action="{{ path('app_login') }}" class="flex flex-col items-center gap-8 md:mx-24">
                 {% if error %}
                     <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                 {% endif %}
@@ -26,36 +39,58 @@
 
                 <div class="flex flex-col gap-8 w-full">
                     <div class="flex flex-col gap-2">
-                        <label for="inputEmail">Adresse email</label>
-                        <input class="outline outline-1 outline-gray-300 rounded-md py-2 px-1" type="email" value="{{ last_username }}" name="_username" id="inputEmail" autocomplete="email" required autofocus>
+                        <label for="inputEmail" class="text-secondary-black">Adresse email</label>
+                        <input class="outline outline-1 outline-gray-300 rounded-md py-2 px-2" type="email" value="{{ last_username }}" name="_username" id="inputEmail" autocomplete="email" required autofocus>
                     </div>
                     <div class="flex flex-col gap-2">
                         <div class="flex">
-                            <label for="inputPassword">Mot de passe</label>
-                            <div class="ml-auto flex gap-2">
-                                <p>O</p>
-                                <p>Afficher</p>
+                            <label for="inputPassword" class="text-secondary-black">Mot de passe</label>
+                            <div class="ml-auto flex gap-2 cursor-pointer" id="togglePassword">
+                                <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye text-secondary-black"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                                <p id="show-password" class="select-none text-secondary-black">Afficher</p>
                             </div>
                         </div>
-                        <input class="outline outline-1 outline-gray-300 rounded-md py-2 px-1" type="password" name="_password" id="inputPassword" autocomplete="current-password" required>
+                        <input class="outline outline-1 outline-gray-300 rounded-md py-2 px-2" type="password" name="_password" id="inputPassword" autocomplete="current-password" required>
                     </div>
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                     <div class="ml-auto">
-                        <label>
+                        <label class="select-none">
                             <input type="checkbox" name="_remember_me"> Se souvenir de moi
                         </label>
                     </div>
                 </div>
 
-                <button class="submit-btn w-full rounded-full" type="submit">
-                    Sign in
+                <button class="submit-btn w-full rounded-full md:w-1/3 md:mr-auto" type="submit">
+                    Se connecter
                 </button>
             </form>
 
-            <span class="text-lg flex gap-2 justify-center pb-8"><p>Pas encore chez nous ?</p><a  class="underline" href={{ path('app_registration') }}>S'enregistrer</a></span>
+            <span class="text-lg flex gap-2 justify-center pb-8 md:mr-auto md:mx-24"><p>Pas encore chez nous ?</p><a  class="underline" href={{ path('app_registration') }}>S'enregistrer</a></span>
 
         </div>
 
     </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('inputPassword');
+        const togglePassword = document.getElementById('togglePassword');
+        let eyeIcon = document.getElementById('eyeIcon');
+        let showPassword = document.getElementById('show-password');
+
+        const eyeSvg = `<svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>`;
+
+        const eyeOffSvg = `<svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>`;
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            eyeIcon.innerHTML = type === 'password' ? eyeSvg : eyeOffSvg;
+            showPassword.textContent = type === 'password' ? 'Afficher' : 'Masquer';
+        });
+    });
+</script>
 {% endblock %}

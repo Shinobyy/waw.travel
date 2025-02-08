@@ -32,7 +32,7 @@ class Checkpoint
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeInterface $updated_at = null;
 
-    #[ORM\ManyToOne(inversedBy: 'checkpoint')]
+    #[ORM\ManyToOne(inversedBy: 'checkpoints')]
     private ?Roadtrip $roadtrip = null;
 
     public function __construct()

@@ -1,23 +1,7 @@
-# A faire
+# Google Maps API
 
-### User 
+La clé est restreinte en fonction de l'URL, il faut que ca soit en localhost:7015 pour que ca fonctionne.
 
-- [X] Créer un compte
-- [X] Se connecter
-- [X] Se déconnecter
-- [ ] Supprimer son compte
-- [ ] Voir son profil
-- [ ] Modifier son profil
+## DB
 
-
-### Accueil
-
-- [ ] Front
-- [ ] Carte intéractive (récupérer tous les points gps de tous les users).
-
-### Roadtrip
-
-- [ ] Créer un roadtrip
-- [ ] Supprimer un roadtrip
-- [ ] Voir un roadtrip en fonction de :id
-
+DATABASE_URL="mysql://root:@127.0.0.1:3307/wherearewe?serverVersion=11.3.2-MariaDB&charset=utf8mb4"

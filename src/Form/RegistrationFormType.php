@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,8 +19,12 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('username')
-            ->add('email')
+            ->add('username', null, [
+                'label' => 'Nom d\'utilisateur',
+            ])
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
+            ])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
                 'constraints' => [
@@ -32,6 +37,7 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
+                'label' => 'Mot de passe',
             ])
             ->add('confirm_password', PasswordType::class, [
                 'mapped' => false,
@@ -40,6 +46,7 @@ class RegistrationFormType extends AbstractType
                         'message' => 'Please confirm your password',
                     ]),
                 ],
+                'label' => 'Confirmer le mot de passe',
             ])
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
                 $form = $event->getForm();

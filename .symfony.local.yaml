@@ -1,0 +1,8 @@
+http:
+  allow_http: true
+  port: 7015
+  use_gzip: true
+
+workers:
+    tailwind:
+        cmd: ['symfony', 'console', 'tailwind:build', '--watch']

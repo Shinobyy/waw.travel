@@ -8,6 +8,8 @@ html,body {
     font-family: "Plus Jakarta Sans", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
+    
+    @apply bg-primary-white;
 }
 
 h1, h2, h3, h4, h5, h6, p {
@@ -36,4 +38,8 @@ li{
 
 .landing_hero {
     background-image: url('/public/images/landing.webp');
+}
+
+.registration-background {
+    background-image: url('/public/images/register.webp');
 }

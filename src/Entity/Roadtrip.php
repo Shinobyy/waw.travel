@@ -23,6 +23,7 @@ class Roadtrip
     #[ORM\Column(type: Types::TEXT)]
     private ?string $cover_image = null;
 
+
     #[ORM\ManyToOne(inversedBy: 'roadtrips', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user_id = null;
@@ -45,6 +46,15 @@ class Roadtrip
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $image_1 = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $image_2 = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $image_3 = null;
 
     public function __construct()
     {
@@ -150,7 +160,6 @@ class Roadtrip
     public function removeCheckpoints(Checkpoint $checkpoints): static
     {
         if ($this->checkpoints->removeElement($checkpoints)) {
-            // set the owning side to null (unless already changed)
             if ($checkpoints->getRoadtrip() === $this) {
                 $checkpoints->setRoadtrip(null);
             }
@@ -180,5 +189,41 @@ class Roadtrip
         if ($this->created_at === null) {
             $this->created_at = new \DateTimeImmutable();
         }
+    }
+
+    public function getImage1(): ?string
+    {
+        return $this->image_1;
+    }
+
+    public function setImage1(?string $image_1): static
+    {
+        $this->image_1 = $image_1;
+
+        return $this;
+    }
+
+    public function getImage2(): ?string
+    {
+        return $this->image_2;
+    }
+
+    public function setImage2(?string $image_2): static
+    {
+        $this->image_2 = $image_2;
+
+        return $this;
+    }
+
+    public function getImage3(): ?string
+    {
+        return $this->image_3;
+    }
+
+    public function setImage3(?string $image_3): static
+    {
+        $this->image_3 = $image_3;
+
+        return $this;
     }
 }

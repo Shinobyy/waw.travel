@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Checkpoint;
-use App\Entity\Image;
 use App\Entity\Roadtrip;
 use App\Form\RoadtripType;
 use App\Repository\RoadtripRepository;
@@ -17,35 +15,53 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Service\FileUploadService;
 
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 class ProfileController extends AbstractController
 {
+
+    private const UPLOAD_DIRECTORY = 'upload_directory';
+
     private $fileUploadService;
     private $entityManager;
+    private $httpClient;
+    private $slugger;
+    private $ogLocale;
+    private $ogType;
+    private $ogTitle;
+    private $ogDescription;
+    private $ogUrl;
+    private $ogSiteName;
+    private $ogImageSecureUrl;
+    private $ogImageWidth;
+    private $ogImageHeight;
 
-    public function __construct(EntityManagerInterface $entityManager, FileUploadService $fileUploadService)
+    public function __construct(EntityManagerInterface $entityManager, FileUploadService $fileUploadService, HttpClientInterface $httpClient, SluggerInterface $slugger)
     {
         $this->fileUploadService = $fileUploadService;
         $this->entityManager = $entityManager;
+        $this->httpClient = $httpClient;
+        $this->slugger = $slugger;
     }
 
 
-    #[Route('/profile', name: 'app_profile')]
+    #[Route('/profil', name: 'app_profile')]
     public function index(RoadtripRepository $roadtripRepository, Security $security): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $user = $security->getUser();
 
         $roadtrips = $user->getRoadtrips();
 
         $begin = null;
-    $end = null;
+        $end = null;
 
-    // Parcourir les roadtrips pour récupérer le premier et dernier checkpoint
     foreach ($roadtrips as $roadtrip) {
         $checkpoints = $roadtrip->getCheckpoints();
         
-        // Assurez-vous qu'il y a au moins un checkpoint
         if (count($checkpoints) > 0) {
-            // Premier point de départ (premier checkpoint)
             if (!$begin) {
                 $begin = [
                     'name' => $checkpoints[0]->getName(),
@@ -55,7 +71,6 @@ class ProfileController extends AbstractController
                 ];
             }
 
-            // Dernier point d'arrivée (dernier checkpoint)
             $end = [
                 'name' => $checkpoints[count($checkpoints) - 1]->getName(),
                 'arrivalDate' => $checkpoints[count($checkpoints) - 1]->getArrivalDate(),
@@ -65,16 +80,19 @@ class ProfileController extends AbstractController
         }
     }
 
+    $lastRoadtrip = $roadtripRepository->findLastRoadtrip($user->getId());
+
     return $this->render('profile/index.html.twig', [
         'id' => $this->getUser()->getId(),
         'username' => $this->getUser()->getUsername(),
         'roadtrips' => $roadtrips,
         'begin' => $begin,
         'end' => $end,
+        'lastRoadtrip' => $lastRoadtrip
     ]);
     }
 
-    #[Route('profile/add', name: 'app_add_roadtrip')]
+    #[Route('profil/ajouter', name: 'app_add_roadtrip')]
     public function addRoadtrip(Request $request, VehiclesRepository $vehiclesRepository): Response
     {
         $roadtrip = new Roadtrip();
@@ -100,9 +118,32 @@ class ProfileController extends AbstractController
 
             $oldImage = $roadtrip->getCoverImage();
             $directoryName = 'upload_directory';
-            $newFilename = $this->fileUploadService->uploadFile($file, $directoryName, $oldImage);
+            $newFilename = $this->fileUploadService->uploadFile($file, self::UPLOAD_DIRECTORY, $oldImage);
 
             $roadtrip->setCoverImage($newFilename);
+            }
+
+            $images = [
+                "image_1" => "setImage1",
+                "image_2" => "setImage2",
+                "image_3" => "setImage3"
+            ];
+
+            foreach ($images as $field => $setter) {
+                $image = $form->get($field)->getData();
+
+                if ($image) {
+                    $newFilename = $this->fileUploadService->uploadFile($image, self::UPLOAD_DIRECTORY);
+                    $roadtrip->{$setter}($newFilename);
+                } else {
+                    $roadtrip->{$setter}(null);
+                }
+            }
+
+
+
+            foreach ($roadtrip->getCheckpoints() as $checkpoint) {
+                $checkpoint->setRoadtrip($roadtrip);
             }
 
             $this->entityManager->persist($roadtrip);
@@ -145,20 +186,57 @@ class ProfileController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_show_roadtrip', requirements: ['id' => '\d+'])]
-    public function showRoadtirp(int $id, RoadtripRepository $roadtripRepository, Roadtrip $roadtripEntity): Response
+    public function showRoadtirp(int $id, RoadtripRepository $roadtripRepository): Response
     {
         $roadtrip = $roadtripRepository->find($id);
-        $vehicle = $roadtripEntity->getVehicle();
-
+        
+        if (!$roadtrip) {
+            $this->addFlash('error', 'Le roadtrip demandé n\'existe pas.');
+            return $this->redirectToRoute('app_main');
+        }
+        
         if (!$id)
         {
             $this->redirectToRoute('app_main');
         }
+        
+        $vehicle = $roadtrip->getVehicle();
+        $user = $roadtrip->getUserId();
+
+        $this->ogLocale = 'fr_FR';
+        $this->ogType = 'website';
+        $this->ogTitle = $roadtrip->getTitle();
+        $this->ogDescription = substr($roadtrip->getDescription(), 0, 245) . '...';
+        $this->ogUrl = $this->generateUrl('app_show_roadtrip', ['id' => $roadtrip->getId()], true);
+        $this->ogSiteName = 'Waw.travel';
+        $this->ogImageSecureUrl = $roadtrip->getCoverImage();
 
         return $this->render('profile/show.html.twig', [
             'roadtrip' => $roadtrip,
-            'username' => $this->getUser()->getUsername(),
-            'vehicle' => $vehicle
+            'username' => $user->getUsername(),
+            'vehicle' => $vehicle,
+            'ogLocale' => $this->ogLocale,
+            'ogType' => $this->ogType,
+            'ogTitle' => $this->ogTitle,
+            'ogDescription' => $this->ogDescription,
+            'ogUrl' => $this->ogUrl,
+            'ogSiteName' => $this->ogSiteName,
+            'ogImageSecureUrl' => $this->ogImageSecureUrl,
         ]);
+    }
+
+    #[Route('/{id}/supprimer', name: 'app_delete_roadtrip', methods: ['GET'])]
+    public function deleteRoadTrip(int $id, RoadtripRepository $roadtripRepository, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $roadtrip = $roadtripRepository->find($id);
+
+        $em->remove($roadtrip);
+        $em->flush();
+
+        $this->fileUploadService->deleteFile($roadtrip->getCoverImage(), self::UPLOAD_DIRECTORY);
+
+        return $this->redirectToRoute('app_profile');
     }
 }
