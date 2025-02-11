@@ -27,8 +27,8 @@ class CheckpointType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'my-2 w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-red focus:border-primary-red transition-colors',
-                    'placeholder' => 'Coordonnées GPS (sélectionnez sur la carte)',
-                    'readonly' => 'readonly',
+                    'placeholder' => 'Coordonnées GPS (ex: 45.7589,-0.3426)',
+                    'readonly' => false,
                 ],
             ])
             ->add('arrival_date', DateTimeType::class, [
