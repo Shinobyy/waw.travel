@@ -118,7 +118,7 @@ class ProfileController extends AbstractController
 
             $oldImage = $roadtrip->getCoverImage();
             $directoryName = 'upload_directory';
-            $newFilename = $this->fileUploadService->uploadFile($file, self::UPLOAD_DIRECTORY, $oldImage);
+            $newFilename = $this->fileUploadService->uploadFile($file, $directoryName, $oldImage);
 
             $roadtrip->setCoverImage($newFilename);
             }
@@ -133,7 +133,7 @@ class ProfileController extends AbstractController
                 $image = $form->get($field)->getData();
 
                 if ($image) {
-                    $newFilename = $this->fileUploadService->uploadFile($image, self::UPLOAD_DIRECTORY);
+                    $newFilename = $this->fileUploadService->uploadFile($image, $directoryName);
                     $roadtrip->{$setter}($newFilename);
                 } else {
                     $roadtrip->{$setter}(null);
