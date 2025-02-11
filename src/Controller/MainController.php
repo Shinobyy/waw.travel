@@ -20,4 +20,16 @@ class MainController extends AbstractController
             'checkpoints' => $checkpoints,
         ]);
     }
+
+    #[Route('/about', name: 'app_about')]
+    public function about(): Response
+    {
+        return $this->render('main/about.html.twig');
+    }
+
+    #[Route('/privacy-policy', name: 'app_privacy_policy')]
+    public function privacyPolicy(): Response
+    {
+        return $this->render('main/privacy_policy.html.twig');
+    }
 }

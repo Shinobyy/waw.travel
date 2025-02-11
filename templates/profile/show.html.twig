@@ -109,7 +109,7 @@
         <span class="text-white">Aucun checkpoint disponible.</span>
     {% endif %}
     </div>
-    <a class="min-w-36 px-4 py-2 justify-center rounded-full flex gap-2 bg-primary-red text-white outline-2 outline-primary-red hover:outline-primary-red hover:outline hover:bg-transparent transition-all hover:cursor-pointer" href={{path('app_show_roadtrip', { id: roadtrip.id })}}>
+    <a class="min-w-36 px-4 py-2 justify-center rounded-full flex gap-2 bg-primary-red text-white outline-2 outline-primary-red hover:outline-primary-red hover:outline hover:bg-transparent transition-all hover:cursor-pointer" id="share-btn">
     Partagez le trajet à vos proches !</a>
 
 
@@ -182,6 +182,24 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        let shareBtn = document.getElementById('share-btn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => {
+                        alert('URL copiée !');
+                    })
+                    .catch(err => {
+                        console.error('Erreur lors de la copie :', err);
+                    });
+                });
+            }
+        });
+    </script>
+
     <script>
       var checkpoints = {{ roadtrip.checkpoints|map(c => c.googleMapsCoordinates)|json_encode|raw }};
     </script>
