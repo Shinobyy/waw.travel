@@ -31,10 +31,10 @@ class CheckpointType extends AbstractType
                     'readonly' => false,
                 ],
             ])
-            ->add('arrival_date', DateTimeType::class, [
+            ->add('departure_date', DateTimeType::class, [
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
-                'label' => 'Date d\'arrivée',
+                'label' => 'Date de départ',
                 'html5' => true,
                 'required' => false,
                 'attr' => [
@@ -52,10 +52,10 @@ class CheckpointType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('departure_date', DateTimeType::class, [
+            ->add('arrival_date', DateTimeType::class, [
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
-                'label' => 'Date de départ',
+                'label' => 'Date d\'arrivée',
                 'html5' => true,
                 'required' => false,
                 'attr' => [
