@@ -101,19 +101,18 @@
                                         {{ form_widget(checkpoint.google_maps_coordinates, {
                                             'attr': {
                                                 'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-300 transition-colors coordinates-input',
-                                                'readonly': 'readonly',
-                                                'placeholder': 'Sélectionnez un point sur la carte'
+                                                'placeholder': 'Renseignez les coordonnées GPS'
                                             }
                                         }) }}
                                     </div>
                                 </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {{ form_row(checkpoint.arrival_date, {
+                                    {{ form_row(checkpoint.departure_date, {
                                         'label_attr': {'class': 'block text-sm font-medium text-gray-600'},
                                         'attr': {'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-300 transition-colors'}
                                     }) }}
-                                    {{ form_row(checkpoint.departure_date, {
+                                    {{ form_row(checkpoint.arrival_date, {
                                         'label_attr': {'class': 'block text-sm font-medium text-gray-600'},
                                         'attr': {'class': 'w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-300 transition-colors'}
                                     }) }}
@@ -173,12 +172,15 @@
                 return;
             }
 
+            // Récupère le proto stocké dans le protocolContainer = Formulaire des checkpoints
             const prototype = protocolContainer.dataset.prototype;
             if (!prototype) {
                 console.error('Prototype data not found');
                 return;
             }
             
+
+            // Remplace par l'index du checkpnt = au lieu de __name__ on met l'index
             const newForm = prototype.replace(/__name__/g, index);
             
             const checkpointDiv = document.createElement('div');
@@ -192,7 +194,7 @@
             removeButton.textContent = 'Supprimer';
             
             checkpointDiv.appendChild(removeButton);
-            checkpointsContainer.appendChild(checkpointDiv); // Only append once
+            checkpointsContainer.appendChild(checkpointDiv);
             
             index++;
         });
