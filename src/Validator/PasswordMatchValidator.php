@@ -8,7 +8,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class PasswordMatchValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint)
+    public function validate($value, Constraint $constraint): void
     {
         if (!$value instanceof FormInterface) {
             throw new \LogicException('The PasswordMatch constraint can only be applied to forms.');
