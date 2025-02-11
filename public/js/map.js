@@ -26,10 +26,10 @@
                 if (!isNaN(lat) && !isNaN(lng)) {
                     const position = { lat, lng };
                     coordinates.push(position);
+                    
                     new google.maps.marker.AdvancedMarkerElement({
                         map,
                         position,
-                        title: "Checkpoint",
                     });
                 } else {
                     console.warn("Invalid checkpoint data:", checkpoint);
